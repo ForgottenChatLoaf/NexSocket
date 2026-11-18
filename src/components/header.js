@@ -1,6 +1,5 @@
 import { APP_CONFIG } from '../config/app-config.js';
 import { BLE_CONFIG } from '../services/bluetooth/ble-config.js';
-
 export function renderHeader() {
   const header = document.createElement('header');
   header.className = 'app-header';
@@ -58,7 +57,11 @@ function openSettingsModal() {
         <h2 id="settings-title" style="font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-text-primary);">
           App & Device Settings
         </h2>
-        <button class="btn-icon" id="btn-close-settings" aria-label="Close settings">✕</button>
+        <button class="btn-icon" id="btn-close-settings" aria-label="Close settings">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+          </svg>
+        </button>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 0.875rem; font-size: var(--font-size-sm); margin-bottom: 1.5rem;">
@@ -68,7 +71,7 @@ function openSettingsModal() {
         </div>
         <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
           <span style="color: var(--color-text-secondary);">Operating Mode</span>
-          <span class="demo-badge">MOCK / DEMO MODE</span>
+          <span class="demo-badge">MOCK BLE</span>
         </div>
         <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
           <span style="color: var(--color-text-secondary);">Target Device</span>
@@ -80,10 +83,16 @@ function openSettingsModal() {
             ${BLE_CONFIG.serviceUuid}
           </span>
         </div>
-        <div style="display: flex; flex-direction: column; gap: 0.25rem; padding: 0.5rem 0;">
+        <div style="display: flex; flex-direction: column; gap: 0.25rem; padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
           <span style="color: var(--color-text-secondary);">Command UUID:</span>
           <span style="font-family: monospace; font-size: var(--font-size-xs); color: var(--color-text-primary); word-break: break-all;">
             ${BLE_CONFIG.commandCharacteristicUuid}
+          </span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.25rem; padding: 0.5rem 0;">
+          <span style="color: var(--color-text-secondary);">Status UUID:</span>
+          <span style="font-family: monospace; font-size: var(--font-size-xs); color: var(--color-text-primary); word-break: break-all;">
+            ${BLE_CONFIG.statusCharacteristicUuid}
           </span>
         </div>
       </div>

@@ -13,6 +13,7 @@
   align-items: center;
   gap: var(--spacing-md);
   text-decoration: none;
+  min-width: 0;
 }
 
 .brand-logo-img {
@@ -31,6 +32,7 @@
 .brand-info {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .brand-title {
@@ -93,6 +95,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
 }
 
 .connection-meta {
@@ -153,6 +157,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
   padding-top: var(--spacing-xs);
   border-top: 1px dashed rgba(30, 58, 95, 0.8);
   font-size: var(--font-size-xs);

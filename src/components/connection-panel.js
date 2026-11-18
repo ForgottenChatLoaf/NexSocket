@@ -3,6 +3,7 @@ import { bleService } from '../services/bluetooth/ble-service.js';
 import { BLE_CONFIG } from '../services/bluetooth/ble-config.js';
 import { appState } from '../state/app-state.js';
 import { outletState } from '../state/outlet-state.js';
+import { renderConfirmationDialog } from './confirmation-dialog.js';
 
 export function renderConnectionPanel() {
   const panel = document.createElement('section');
@@ -103,14 +104,23 @@ export function renderConnectionPanel() {
 
     const btnDisconnect = panel.querySelector('#btn-disconnect');
     if (btnDisconnect) {
-      btnDisconnect.onclick = async () => {
-        try {
-          await bleService.disconnect();
-        } catch (err) {
-          appState.setState({
-            notification: { type: 'error', message: `Disconnect error: ${err.message}` },
-          });
-        }
+      btnDisconnect.onclick = () => {
+        const dialog = renderConfirmationDialog({
+          title: 'Disconnect Device?',
+          message: 'This will end the Bluetooth connection to SMART_OUTLET_01. Outlet states will no longer be controllable until reconnected.',
+          confirmText: 'Disconnect',
+          cancelText: 'Cancel',
+          onConfirm: async () => {
+            try {
+              await bleService.disconnect();
+            } catch (err) {
+              appState.setState({
+                notification: { type: 'error', message: `Disconnect error: ${err.message}` },
+              });
+            }
+          },
+        });
+        document.body.appendChild(dialog);
       };
     }
   }
