@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="256" viewBox="0 0 920 256" role="img" aria-labelledby="t d">
+  <title id="t">NexSocket</title>
+  <desc id="d">NexSocket horizontal logo: outlet symbol on the left and the wordmark NexSocket on the right.</desc>
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@600;800&amp;display=swap');
+      .brand-title-nex { font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif; font-weight: 800; font-size: 88px; fill: #FFFFFF; }
+      .brand-title-socket { font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif; font-weight: 800; font-size: 88px; fill: #2563EB; }
+      .brand-subtitle-tag { font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif; font-weight: 700; font-size: 22px; fill: #22D3EE; letter-spacing: 5px; }
+    </style>
+  </defs>
+  <!-- Symbol Icon (Scale 0.5 to fit 256 height) -->
+  <g transform="translate(16, 16) scale(0.4375)">
+    <rect x="32" y="32" width="448" height="448" rx="112" fill="#0B1F3A"/>
+    <path d="M342.2 206.4 A116 116 0 1 1 169.8 206.4" fill="none" stroke="#22D3EE" stroke-width="34" stroke-linecap="round"/>
+    <path d="M280 100 L224 192 H252 L236 266 L294 164 H264 Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="8" stroke-linejoin="round"/>
+    <rect x="216" y="298" width="20" height="58" rx="10" fill="#FFFFFF"/>
+    <rect x="276" y="298" width="20" height="58" rx="10" fill="#FFFFFF"/>
+  </g>
+  <!-- Typography Wordmark -->
+  <g transform="translate(260, 136)">
+    <text y="0">
+      <tspan class="brand-title-nex">Nex</tspan>
+      <tspan class="brand-title-socket">Socket</tspan>
+    </text>
+    <text y="42" class="brand-subtitle-tag">SMART OUTLET CONTROL</text>
+  </g>
+</svg>

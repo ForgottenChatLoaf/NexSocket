@@ -14,8 +14,8 @@ export function renderHeader() {
         id="brand-logo"
       />
       <div class="brand-info">
-        <h1 class="brand-title">${APP_CONFIG.appName}</h1>
-        <span class="brand-subtitle">Smart BLE Controller</span>
+        <h1 class="brand-title">Nex<span class="brand-title-accent">Socket</span></h1>
+        <span class="brand-subtitle">${APP_CONFIG.tagline || 'SMART OUTLET CONTROL'}</span>
       </div>
     </div>
     <div class="header-actions">
@@ -55,7 +55,7 @@ function openSettingsModal() {
   backdrop.innerHTML = `
     <div class="dialog-modal" role="dialog" aria-labelledby="settings-title">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-        <h2 id="settings-title" style="font-size: var(--font-size-lg); font-weight: 700; color: var(--color-text-primary);">
+        <h2 id="settings-title" style="font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-text-primary);">
           App & Device Settings
         </h2>
         <button class="btn-icon" id="btn-close-settings" aria-label="Close settings">✕</button>
@@ -64,7 +64,7 @@ function openSettingsModal() {
       <div style="display: flex; flex-direction: column; gap: 0.875rem; font-size: var(--font-size-sm); margin-bottom: 1.5rem;">
         <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
           <span style="color: var(--color-text-secondary);">Application</span>
-          <span style="font-weight: 600;">${APP_CONFIG.appName} v${APP_CONFIG.version}</span>
+          <span style="font-weight: var(--font-weight-semibold);">${APP_CONFIG.appName} v${APP_CONFIG.version}</span>
         </div>
         <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
           <span style="color: var(--color-text-secondary);">Operating Mode</span>
@@ -72,7 +72,7 @@ function openSettingsModal() {
         </div>
         <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
           <span style="color: var(--color-text-secondary);">Target Device</span>
-          <span style="font-family: monospace; font-weight: 600;">${BLE_CONFIG.deviceName}</span>
+          <span style="font-family: monospace; font-weight: var(--font-weight-semibold); color: var(--color-brand-cyan);">${BLE_CONFIG.deviceName}</span>
         </div>
         <div style="display: flex; flex-direction: column; gap: 0.25rem; padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
           <span style="color: var(--color-text-secondary);">Service UUID:</span>
