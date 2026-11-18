@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="t d">
-  <title id="t">NexSocket</title>
-  <desc id="d">NexSocket symbol: a rounded outlet faceplate containing a power ring, a lightning bolt and two outlet slots.</desc>
-  <rect x="32" y="32" width="448" height="448" rx="112" fill="#0B1F3A"/>
-  <path d="M342.2 206.4 A116 116 0 1 1 169.8 206.4" fill="none" stroke="#22D3EE" stroke-width="34" stroke-linecap="round"/>
-  <path d="M280 100 L224 192 H252 L236 266 L294 164 H264 Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="8" stroke-linejoin="round"/>
-  <rect x="216" y="298" width="20" height="58" rx="10" fill="#FFFFFF"/>
-  <rect x="276" y="298" width="20" height="58" rx="10" fill="#FFFFFF"/>
-</svg>

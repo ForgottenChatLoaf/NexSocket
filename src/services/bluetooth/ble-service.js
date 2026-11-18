@@ -62,7 +62,7 @@ class BleService {
       appState.setState({
         isConnecting: false,
         connectedDevice: deviceId,
-        notification: { type: 'success', message: 'Connected to Smart Outlet' },
+        notification: { type: 'success', message: 'Connected to NexSocket (SMART_OUTLET_01)' },
       });
 
       // Subscribe to status notifications
@@ -115,7 +115,7 @@ class BleService {
     appState.setState({
       isConnecting: false,
       connectedDevice: null,
-      notification: { type: 'info', message: 'Disconnected from Smart Outlet' },
+      notification: { type: 'info', message: 'Disconnected from NexSocket' },
     });
   }
 
