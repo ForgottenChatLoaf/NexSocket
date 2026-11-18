@@ -11,6 +11,7 @@ class BleService {
   constructor() {
     this.adapter = null;
     this.isInitialized = false;
+    this.isReconnecting = false;
   }
 
   async init() {
@@ -59,6 +60,11 @@ class BleService {
       });
 
       outletState.setState({ connected: true });
+      outletState.addHistory({
+        type: 'bluetooth',
+        title: 'Bluetooth Connected',
+        detail: `Paired with ${BLE_CONFIG.deviceName} (${deviceId})`,
+      });
       appState.setState({
         isConnecting: false,
         connectedDevice: deviceId,
@@ -69,6 +75,7 @@ class BleService {
       await this.adapter.subscribeStatus((rawStatus) => {
         const parsed = BleProtocol.parseStatus(rawStatus);
         const prev = outletState.getState();
+        const names = prev.names || { outlet1: 'Outlet 1', outlet2: 'Outlet 2' };
         
         outletState.setState({
           outlet1: parsed.outlet1,
@@ -76,18 +83,23 @@ class BleService {
           isPending: false,
         });
 
-        // Provide feedback when state transitions occur after initial connection
+        // Provide feedback and history recording when state transitions occur
         if (prev.connected) {
           if (!prev.outlet1 && parsed.outlet1 && prev.outlet2 === parsed.outlet2) {
-            appState.setState({ notification: { type: 'success', message: 'Outlet 1 confirmed ON' } });
+            appState.setState({ notification: { type: 'success', message: `${names.outlet1} confirmed ON` } });
+            outletState.addHistory({ type: 'power-on', title: `${names.outlet1} ON`, detail: 'Channel 1 relay activated' });
           } else if (prev.outlet1 && !parsed.outlet1 && prev.outlet2 === parsed.outlet2) {
-            appState.setState({ notification: { type: 'info', message: 'Outlet 1 confirmed OFF' } });
+            appState.setState({ notification: { type: 'info', message: `${names.outlet1} confirmed OFF` } });
+            outletState.addHistory({ type: 'power-off', title: `${names.outlet1} OFF`, detail: 'Channel 1 relay cut off' });
           } else if (!prev.outlet2 && parsed.outlet2 && prev.outlet1 === parsed.outlet1) {
-            appState.setState({ notification: { type: 'success', message: 'Outlet 2 confirmed ON' } });
+            appState.setState({ notification: { type: 'success', message: `${names.outlet2} confirmed ON` } });
+            outletState.addHistory({ type: 'power-on', title: `${names.outlet2} ON`, detail: 'Channel 2 relay activated' });
           } else if (prev.outlet2 && !parsed.outlet2 && prev.outlet1 === parsed.outlet1) {
-            appState.setState({ notification: { type: 'info', message: 'Outlet 2 confirmed OFF' } });
+            appState.setState({ notification: { type: 'info', message: `${names.outlet2} confirmed OFF` } });
+            outletState.addHistory({ type: 'power-off', title: `${names.outlet2} OFF`, detail: 'Channel 2 relay cut off' });
           } else if ((prev.outlet1 || prev.outlet2) && !parsed.outlet1 && !parsed.outlet2) {
             appState.setState({ notification: { type: 'info', message: 'All outlets confirmed OFF' } });
+            outletState.addHistory({ type: 'all-off', title: 'Master Shutoff', detail: 'All channels powered off' });
           }
         }
       });
@@ -102,21 +114,61 @@ class BleService {
     if (this.adapter) {
       await this.adapter.disconnect();
     }
-    this.handleDisconnect();
+    this.handleDisconnect(false);
   }
 
-  handleDisconnect() {
+  handleDisconnect(unexpected = false) {
+    const wasConnected = outletState.getState().connected;
     outletState.setState({
       connected: false,
       outlet1: false,
       outlet2: false,
       isPending: false,
     });
+    if (wasConnected) {
+      outletState.addHistory({
+        type: 'bluetooth',
+        title: unexpected ? 'Connection Lost' : 'Bluetooth Disconnected',
+        detail: unexpected ? 'Link dropped unexpectedly' : 'Disconnected by user',
+      });
+    }
     appState.setState({
       isConnecting: false,
       connectedDevice: null,
-      notification: { type: 'info', message: 'Disconnected from NexSocket' },
+      notification: {
+        type: unexpected ? 'error' : 'info',
+        message: unexpected ? 'Bluetooth link dropped' : 'Disconnected from NexSocket',
+      },
     });
+
+    // Auto-reconnection logic
+    if (unexpected && outletState.getState().autoReconnect && !this.isReconnecting) {
+      this.attemptAutoReconnect();
+    }
+  }
+
+  async attemptAutoReconnect() {
+    this.isReconnecting = true;
+    appState.setState({
+      notification: { type: 'info', message: 'Connection lost. Auto-reconnecting in 3s...' },
+    });
+    setTimeout(async () => {
+      try {
+        if (!outletState.getState().connected && outletState.getState().autoReconnect) {
+          appState.setState({
+            notification: { type: 'info', message: 'Attempting auto-reconnect...' },
+          });
+          await this.startScan(async (device) => {
+            await this.stopScan();
+            await this.connect(device.deviceId);
+          });
+        }
+      } catch (err) {
+        logger.debug('Auto-reconnect attempt failed:', err.message);
+      } finally {
+        this.isReconnecting = false;
+      }
+    }, 3000);
   }
 
   async sendCommand(commandByte) {

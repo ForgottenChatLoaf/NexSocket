@@ -8,12 +8,14 @@ export function renderOutletCard(outletNumber) {
   card.setAttribute('aria-label', `Outlet ${outletNumber} Control`);
 
   const outletKey = `outlet${outletNumber}`;
+  let isEditing = false;
 
   function update() {
     const state = outletState.getState();
     const isOn = Boolean(state[outletKey]);
     const isConnected = state.connected;
     const isPending = Boolean(state.isPending);
+    const outletName = (state.names && state.names[outletKey]) || `Outlet ${outletNumber}`;
 
     // Update active class on card wrapper
     card.classList.toggle('is-on', isOn && isConnected);
@@ -29,8 +31,27 @@ export function renderOutletCard(outletNumber) {
             </svg>
           </div>
           <div class="outlet-title-group">
-            <span class="outlet-label">Outlet ${outletNumber}</span>
-            <span class="outlet-sublabel">Simulated Relay Channel ${outletNumber}</span>
+            ${
+              isEditing
+                ? `<div class="outlet-rename-row">
+                     <input type="text" class="outlet-rename-input" id="input-rename-${outletNumber}" value="${outletName}" maxlength="24" placeholder="Outlet name" />
+                     <button class="btn-icon-xs btn-confirm-rename" id="btn-save-rename-${outletNumber}" title="Save Name">
+                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                     </button>
+                     <button class="btn-icon-xs btn-cancel-rename" id="btn-cancel-rename-${outletNumber}" title="Cancel">
+                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                     </button>
+                   </div>`
+                : `<div style="display: flex; align-items: center; gap: 0.45rem;">
+                     <span class="outlet-label" id="label-outlet-${outletNumber}">${outletName}</span>
+                     <button class="btn-icon-xs btn-edit-name" id="btn-edit-${outletNumber}" title="Rename Outlet" aria-label="Rename ${outletName}">
+                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                       </svg>
+                     </button>
+                   </div>`
+            }
+            <span class="outlet-sublabel">Relay Channel ${outletNumber} • Direct BLE</span>
           </div>
         </div>
 
@@ -92,13 +113,60 @@ export function renderOutletCard(outletNumber) {
       </div>
     `;
 
+    // Rename handlers
+    const btnEdit = card.querySelector(`#btn-edit-${outletNumber}`);
+    if (btnEdit) {
+      btnEdit.onclick = () => {
+        isEditing = true;
+        update();
+        const input = card.querySelector(`#input-rename-${outletNumber}`);
+        if (input) {
+          input.focus();
+          input.select();
+        }
+      };
+    }
+
+    const btnSaveRename = card.querySelector(`#btn-save-rename-${outletNumber}`);
+    const inputRename = card.querySelector(`#input-rename-${outletNumber}`);
+    if (btnSaveRename && inputRename) {
+      const save = () => {
+        const val = inputRename.value.trim();
+        if (val) {
+          outletState.setOutletName(outletKey, val);
+          appState.setState({
+            notification: { type: 'success', message: `Outlet renamed to "${val}"` },
+          });
+        }
+        isEditing = false;
+        update();
+      };
+      btnSaveRename.onclick = save;
+      inputRename.onkeydown = (e) => {
+        if (e.key === 'Enter') save();
+        if (e.key === 'Escape') {
+          isEditing = false;
+          update();
+        }
+      };
+    }
+
+    const btnCancelRename = card.querySelector(`#btn-cancel-rename-${outletNumber}`);
+    if (btnCancelRename) {
+      btnCancelRename.onclick = () => {
+        isEditing = false;
+        update();
+      };
+    }
+
+    // Toggle handlers
     const btnOn = card.querySelector(`#btn-outlet-${outletNumber}-on`);
     if (btnOn) {
       btnOn.onclick = async () => {
         if (!isConnected || isPending) return;
         if (isOn) {
           appState.setState({
-            notification: { type: 'info', message: `Outlet ${outletNumber} is already ON` },
+            notification: { type: 'info', message: `${outletName} is already ON` },
           });
           return;
         }
@@ -113,7 +181,7 @@ export function renderOutletCard(outletNumber) {
           appState.setState({
             notification: {
               type: 'error',
-              message: `Failed to turn ON Outlet ${outletNumber}: ${err.message}`,
+              message: `Failed to turn ON ${outletName}: ${err.message}`,
             },
           });
         }
@@ -126,7 +194,7 @@ export function renderOutletCard(outletNumber) {
         if (!isConnected || isPending) return;
         if (!isOn) {
           appState.setState({
-            notification: { type: 'info', message: `Outlet ${outletNumber} is already OFF` },
+            notification: { type: 'info', message: `${outletName} is already OFF` },
           });
           return;
         }
@@ -141,7 +209,7 @@ export function renderOutletCard(outletNumber) {
           appState.setState({
             notification: {
               type: 'error',
-              message: `Failed to turn OFF Outlet ${outletNumber}: ${err.message}`,
+              message: `Failed to turn OFF ${outletName}: ${err.message}`,
             },
           });
         }

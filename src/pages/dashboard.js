@@ -1,6 +1,8 @@
 import { renderHeader } from '../components/header.js';
 import { renderConnectionPanel } from '../components/connection-panel.js';
+import { renderSystemOverview } from '../components/system-overview.js';
 import { renderOutletCard } from '../components/outlet-card.js';
+import { renderActivityHistory } from '../components/activity-history.js';
 import { renderNotification } from '../components/notification.js';
 import { renderConfirmationDialog } from '../components/confirmation-dialog.js';
 import { outletState } from '../state/outlet-state.js';
@@ -11,32 +13,35 @@ export function renderDashboard() {
   const container = document.createElement('main');
   container.className = 'main-container';
 
-  // A. Application Header
+  // 1. Application Header
   container.appendChild(renderHeader());
 
-  // E. Notification Host
+  // 2. Notification Host
   container.appendChild(renderNotification());
 
-  // B. Bluetooth Connection Panel
+  // 3. Bluetooth Connection Panel & Monitor
   container.appendChild(renderConnectionPanel());
 
-  // Section Header: Power Controls
+  // 4. System Overview Metrics
+  container.appendChild(renderSystemOverview());
+
+  // 5. Section Header: Power Controls
   const sectionRow = document.createElement('div');
   sectionRow.className = 'section-title-row';
   sectionRow.innerHTML = `
     <span class="section-title">Power Outlets</span>
-    <span style="font-size: var(--font-size-xs); color: var(--color-text-muted);">2 Outputs Available</span>
+    <span style="font-size: var(--font-size-xs); color: var(--color-text-muted);">2 Channels • Independent Relays</span>
   `;
   container.appendChild(sectionRow);
 
-  // C. Outlet Management Grid (Outlet 1 & Outlet 2)
+  // 6. Outlet Management Grid (Outlet 1 & Outlet 2)
   const grid = document.createElement('div');
   grid.className = 'outlet-grid';
   grid.appendChild(renderOutletCard(1));
   grid.appendChild(renderOutletCard(2));
   container.appendChild(grid);
 
-  // D. Global Control Card ("Turn All OFF")
+  // 7. Global Control Card ("Turn All OFF")
   const globalCard = document.createElement('section');
   globalCard.className = 'card global-control-card';
   globalCard.setAttribute('aria-label', 'Global Controls');
@@ -113,7 +118,10 @@ export function renderDashboard() {
 
   container.appendChild(globalCard);
 
-  // Footer / Status line
+  // 8. Activity History Log
+  container.appendChild(renderActivityHistory());
+
+  // 9. Footer / Status line
   const footer = document.createElement('footer');
   footer.className = 'app-footer';
   footer.innerHTML = `

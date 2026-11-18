@@ -12,14 +12,14 @@ export function renderConnectionPanel() {
 
   function update() {
     const { isScanning, isConnecting, connectedDevice } = appState.getState();
-    const { connected } = outletState.getState();
+    const { connected, rssi, autoReconnect } = outletState.getState();
     const isNative = Capacitor.isNativePlatform();
 
     let statusLabel = 'Offline • Tap connect to discover';
     let statusClass = 'offline';
 
     if (connected) {
-      statusLabel = `Paired • GATT Service Active (${connectedDevice || 'ESP32'})`;
+      statusLabel = `Paired • GATT Active (${connectedDevice || 'ESP32'})`;
       statusClass = 'online';
     } else if (isScanning) {
       statusLabel = 'Scanning for SMART_OUTLET_01...';
@@ -28,6 +28,9 @@ export function renderConnectionPanel() {
       statusLabel = 'Establishing BLE GATT link...';
       statusClass = 'connecting';
     }
+
+    const currentRssi = rssi || -58;
+    const signalQuality = currentRssi > -60 ? 'Optimal' : currentRssi > -75 ? 'Good' : 'Fair';
 
     panel.innerHTML = `
       <div class="connection-header">
@@ -38,9 +41,10 @@ export function renderConnectionPanel() {
             </svg>
           </div>
           <div class="connection-details">
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
               <span class="device-name">${BLE_CONFIG.deviceName}</span>
               <span class="demo-badge">${isNative ? 'BLE NATIVE' : 'MOCK BLE'}</span>
+              ${autoReconnect ? `<span class="badge-subtle" title="Auto-reconnect is enabled">AUTO-SYNC</span>` : ''}
             </div>
             <span class="device-status-text">
               <span class="pulse-dot ${statusClass}"></span>
@@ -72,7 +76,19 @@ export function renderConnectionPanel() {
 
       <div class="connection-badge-row">
         <span>Hardware: ESP32-C3 GATT Peripheral</span>
-        <span>${connected ? 'RSSI: -58 dBm • Optimal' : 'Range: BLE Direct'}</span>
+        <div class="signal-indicator" style="display: flex; align-items: center; gap: 0.35rem;">
+          ${
+            connected
+              ? `<span class="signal-bars" title="Signal Strength: ${signalQuality}">
+                   <span class="bar bar-1 active"></span>
+                   <span class="bar bar-2 active"></span>
+                   <span class="bar bar-3 active"></span>
+                   <span class="bar bar-4 ${currentRssi > -65 ? 'active' : ''}"></span>
+                 </span>
+                 <span style="color: var(--color-brand-cyan); font-weight: 500;">RSSI: ${currentRssi} dBm (${signalQuality})</span>`
+              : `<span>Range: BLE Direct</span>`
+          }
+        </div>
       </div>
     `;
 

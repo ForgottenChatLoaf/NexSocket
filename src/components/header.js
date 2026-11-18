@@ -1,5 +1,8 @@
 import { APP_CONFIG } from '../config/app-config.js';
 import { BLE_CONFIG } from '../services/bluetooth/ble-config.js';
+import { outletState } from '../state/outlet-state.js';
+import { appState } from '../state/app-state.js';
+
 export function renderHeader() {
   const header = document.createElement('header');
   header.className = 'app-header';
@@ -51,12 +54,16 @@ function openSettingsModal() {
   backdrop.id = 'settings-modal-backdrop';
   backdrop.className = 'dialog-backdrop';
 
+  const { autoReconnect } = outletState.getState();
+
   backdrop.innerHTML = `
-    <div class="dialog-modal" role="dialog" aria-labelledby="settings-title">
+    <div class="dialog-modal settings-modal" role="dialog" aria-labelledby="settings-title">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-        <h2 id="settings-title" style="font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-text-primary);">
-          App & Device Settings
-        </h2>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <h2 id="settings-title" style="font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-text-primary);">
+            Settings & Hardware
+          </h2>
+        </div>
         <button class="btn-icon" id="btn-close-settings" aria-label="Close settings">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
@@ -64,46 +71,99 @@ function openSettingsModal() {
         </button>
       </div>
 
-      <div style="display: flex; flex-direction: column; gap: 0.875rem; font-size: var(--font-size-sm); margin-bottom: 1.5rem;">
-        <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
-          <span style="color: var(--color-text-secondary);">Application</span>
-          <span style="font-weight: var(--font-weight-semibold);">${APP_CONFIG.appName} v${APP_CONFIG.version}</span>
+      <div class="settings-scroll-area">
+        <!-- Application Preferences -->
+        <span class="settings-group-label">PREFERENCES</span>
+        <div class="settings-card-group">
+          <div class="settings-row">
+            <div>
+              <span class="settings-label">Auto-Reconnection</span>
+              <span class="settings-desc">Automatically retry if link drops</span>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="toggle-auto-reconnect" ${autoReconnect ? 'checked' : ''} />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
         </div>
-        <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
-          <span style="color: var(--color-text-secondary);">Operating Mode</span>
-          <span class="demo-badge">MOCK BLE</span>
+
+        <!-- Hardware & Device Info -->
+        <span class="settings-group-label" style="margin-top: 1rem;">TARGET HARDWARE</span>
+        <div class="settings-card-group">
+          <div class="settings-row">
+            <span class="settings-label">Target Peripheral</span>
+            <span style="font-family: monospace; font-weight: 600; color: var(--color-brand-cyan);">${BLE_CONFIG.deviceName}</span>
+          </div>
+          <div class="settings-row">
+            <span class="settings-label">Microcontroller</span>
+            <span style="color: var(--color-text-secondary);">ESP32-C3 RISC-V</span>
+          </div>
+          <div class="settings-row">
+            <span class="settings-label">Simulated MAC</span>
+            <span style="font-family: monospace; font-size: 0.8rem; color: var(--color-text-secondary);">84:F7:03:A1:C2:59</span>
+          </div>
+          <div class="settings-row">
+            <span class="settings-label">Firmware</span>
+            <span style="color: var(--color-text-secondary);">v1.2.0-esp32c3 (GATT)</span>
+          </div>
+          <div class="settings-row">
+            <span class="settings-label">GATT MTU</span>
+            <span style="color: var(--color-text-secondary);">23 Bytes (Standard LE)</span>
+          </div>
         </div>
-        <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
-          <span style="color: var(--color-text-secondary);">Target Device</span>
-          <span style="font-family: monospace; font-weight: var(--font-weight-semibold); color: var(--color-brand-cyan);">${BLE_CONFIG.deviceName}</span>
+
+        <!-- GATT Protocol UUIDs -->
+        <span class="settings-group-label" style="margin-top: 1rem;">GATT UUID SPECIFICATION</span>
+        <div class="settings-card-group">
+          <div class="settings-row-col">
+            <span class="settings-label">Service UUID:</span>
+            <span class="uuid-mono">${BLE_CONFIG.serviceUuid}</span>
+          </div>
+          <div class="settings-row-col">
+            <span class="settings-label">Command Characteristic (Write):</span>
+            <span class="uuid-mono">${BLE_CONFIG.commandCharacteristicUuid}</span>
+          </div>
+          <div class="settings-row-col">
+            <span class="settings-label">Status Characteristic (Notify/Read):</span>
+            <span class="uuid-mono">${BLE_CONFIG.statusCharacteristicUuid}</span>
+          </div>
         </div>
-        <div style="display: flex; flex-direction: column; gap: 0.25rem; padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
-          <span style="color: var(--color-text-secondary);">Service UUID:</span>
-          <span style="font-family: monospace; font-size: var(--font-size-xs); color: var(--color-text-primary); word-break: break-all;">
-            ${BLE_CONFIG.serviceUuid}
-          </span>
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 0.25rem; padding: 0.5rem 0; border-bottom: 1px solid var(--color-border);">
-          <span style="color: var(--color-text-secondary);">Command UUID:</span>
-          <span style="font-family: monospace; font-size: var(--font-size-xs); color: var(--color-text-primary); word-break: break-all;">
-            ${BLE_CONFIG.commandCharacteristicUuid}
-          </span>
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 0.25rem; padding: 0.5rem 0;">
-          <span style="color: var(--color-text-secondary);">Status UUID:</span>
-          <span style="font-family: monospace; font-size: var(--font-size-xs); color: var(--color-text-primary); word-break: break-all;">
-            ${BLE_CONFIG.statusCharacteristicUuid}
-          </span>
+
+        <!-- App Info -->
+        <span class="settings-group-label" style="margin-top: 1rem;">ABOUT</span>
+        <div class="settings-card-group">
+          <div class="settings-row">
+            <span class="settings-label">Application</span>
+            <span style="font-weight: 600;">${APP_CONFIG.appName} v${APP_CONFIG.version}</span>
+          </div>
+          <div class="settings-row">
+            <span class="settings-label">Architecture</span>
+            <span style="color: var(--color-text-secondary);">Capacitor 8 • Vanilla JS</span>
+          </div>
         </div>
       </div>
 
-      <button class="btn btn-secondary" id="btn-settings-ok" style="width: 100%;">
+      <button class="btn btn-secondary" id="btn-settings-ok" style="width: 100%; margin-top: 1.25rem;">
         Done
       </button>
     </div>
   `;
 
   document.body.appendChild(backdrop);
+
+  const toggleAutoReconnect = backdrop.querySelector('#toggle-auto-reconnect');
+  if (toggleAutoReconnect) {
+    toggleAutoReconnect.onchange = (e) => {
+      const enabled = e.target.checked;
+      outletState.setAutoReconnect(enabled);
+      appState.setState({
+        notification: {
+          type: 'info',
+          message: enabled ? 'Auto-reconnection enabled' : 'Auto-reconnection disabled',
+        },
+      });
+    };
+  }
 
   const close = () => backdrop.remove();
   backdrop.querySelector('#btn-close-settings').onclick = close;

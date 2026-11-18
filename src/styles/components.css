@@ -253,3 +253,186 @@
     transform: translateY(0);
   }
 }
+
+/* Small Button Icons */
+.btn-icon-sm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  color: var(--color-text-secondary);
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-icon-sm:hover {
+  color: var(--color-brand-cyan);
+  background-color: var(--color-bg-card-hover);
+  border-color: var(--color-border-focus);
+}
+
+.btn-icon-xs {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  background-color: rgba(30, 58, 95, 0.4);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  padding: 0;
+}
+
+.btn-icon-xs:hover {
+  color: var(--color-brand-cyan);
+  border-color: var(--color-brand-cyan);
+  background-color: rgba(34, 211, 238, 0.15);
+}
+
+.btn-confirm-rename:hover {
+  color: var(--color-success);
+  border-color: var(--color-success);
+  background-color: var(--color-success-bg);
+}
+
+.btn-cancel-rename:hover {
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+  background-color: var(--color-danger-bg);
+}
+
+.btn-text-danger {
+  font-size: var(--font-size-xs);
+  color: var(--color-danger);
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-fast);
+}
+
+.btn-text-danger:hover {
+  background-color: var(--color-danger-bg);
+}
+
+/* Signal Strength Indicator */
+.signal-bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+}
+
+.signal-bars .bar {
+  width: 3px;
+  background-color: rgba(148, 163, 184, 0.3);
+  border-radius: 1px;
+}
+
+.signal-bars .bar-1 { height: 3px; }
+.signal-bars .bar-2 { height: 6px; }
+.signal-bars .bar-3 { height: 9px; }
+.signal-bars .bar-4 { height: 12px; }
+
+.signal-bars .bar.active {
+  background-color: var(--color-success);
+}
+
+/* Subtle Badge */
+.badge-subtle {
+  font-size: 0.65rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-full);
+  background-color: rgba(16, 185, 129, 0.12);
+  color: var(--color-success);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background-color: #334155;
+  border-radius: 24px;
+  transition: all var(--transition-fast);
+  border: 1px solid var(--color-border);
+}
+
+.toggle-slider::before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 2px;
+  bottom: 2px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  transition: all var(--transition-fast);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background-color: var(--color-brand-blue);
+  border-color: var(--color-brand-cyan);
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(20px);
+}
+
+/* Monospace UUID block */
+.uuid-mono {
+  font-family: monospace;
+  font-size: var(--font-size-xs);
+  color: var(--color-brand-cyan);
+  word-break: break-all;
+  background-color: rgba(7, 19, 36, 0.6);
+  padding: 0.3rem 0.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(30, 58, 95, 0.6);
+}
+
+/* Inline Outlet Rename Input */
+.outlet-rename-row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.outlet-rename-input {
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-brand-cyan);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  padding: 0.2rem 0.45rem;
+  width: 130px;
+  outline: none;
+}
+
