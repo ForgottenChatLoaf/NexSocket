@@ -4,14 +4,200 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <meta name="theme-color" content="#0B1F3A" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <title>NexSocket - Smart Outlet Control</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <main class="main-container">
+        <!-- Header -->
+        <header class="app-header">
+          <div class="brand-wrapper">
+            <img src="./assets/brand/nexsocket-icon.svg" alt="NexSocket Logo" class="brand-logo-img" id="brand-logo" />
+            <div class="brand-info">
+              <h1 class="brand-title">Nex<span class="brand-title-accent">Socket</span></h1>
+              <span class="brand-subtitle">SMART OUTLET CONTROL</span>
+            </div>
+          </div>
+          <div class="header-actions">
+            <div id="header-connection-pill">
+              <div class="status-indicator" style="display: inline-flex; align-items: center; gap: 0.45rem; font-size: var(--font-size-xs); padding: 0.3rem 0.75rem; border-radius: var(--radius-full); border: 1px solid rgba(100, 116, 139, 0.25); background-color: rgba(100, 116, 139, 0.15); color: var(--color-text-muted); font-weight: 600;">
+                <span class="pulse-dot offline"></span>
+                <span>Disconnected</span>
+              </div>
+            </div>
+            <button class="btn-icon" id="btn-settings" title="Settings & Device Info" aria-label="Settings and Device Information">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+            </button>
+          </div>
+        </header>
+
+        <!-- Notification container -->
+        <div id="notification-container" aria-live="polite"></div>
+
+        <!-- Connection Panel -->
+        <section class="card connection-panel" aria-label="Bluetooth Connection Management">
+          <div class="connection-header">
+            <div class="connection-meta">
+              <div class="ble-icon-container">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m7 7 10 10-5 5V2l5 5L7 17"></path>
+                </svg>
+              </div>
+              <div class="connection-details">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <span class="device-name">SMART_OUTLET_01</span>
+                  <span class="demo-badge">MOCK BLE</span>
+                </div>
+                <span class="device-status-text">
+                  <span class="pulse-dot offline"></span>
+                  <span>Offline • Tap connect to discover</span>
+                </span>
+              </div>
+            </div>
+            <div class="connection-controls">
+              <button class="btn btn-primary" id="btn-connect" style="font-size: var(--font-size-sm); min-height: 42px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m7 7 10 10-5 5V2l5 5L7 17"></path>
+                </svg>
+                <span>Connect</span>
+              </button>
+            </div>
+          </div>
+          <div class="connection-badge-row">
+            <span>Hardware: ESP32-C3 GATT Peripheral</span>
+            <span>Range: BLE Direct</span>
+          </div>
+        </section>
+
+        <!-- Power Outlets Title -->
+        <div class="section-title-row">
+          <span class="section-title">Power Outlets</span>
+          <span style="font-size: var(--font-size-xs); color: var(--color-text-muted);">2 Outputs Available</span>
+        </div>
+
+        <!-- Outlets Grid -->
+        <div class="outlet-grid">
+          <!-- Outlet 1 -->
+          <article class="card outlet-card is-off" aria-label="Outlet 1 Control">
+            <div class="outlet-card-top">
+              <div class="outlet-identity">
+                <div class="outlet-icon-circle">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2v10"></path>
+                    <path d="M18.4 6.6a9 9 0 1 1-12.77 0"></path>
+                  </svg>
+                </div>
+                <div class="outlet-title-group">
+                  <span class="outlet-label">Outlet 1</span>
+                  <span class="outlet-sublabel">Simulated Relay Channel 1</span>
+                </div>
+              </div>
+              <div class="outlet-status-pill off">
+                <span class="pulse-dot offline"></span>
+                <span>OFFLINE</span>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <div class="outlet-actions-row">
+                <button type="button" class="btn btn-outlet-on" disabled>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="m9 12 2 2 4-4"></path>
+                  </svg>
+                  <span>Turn ON</span>
+                </button>
+                <button type="button" class="btn btn-outlet-off" disabled>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="m15 9-6 6"></path>
+                    <path d="m9 9 6 6"></path>
+                  </svg>
+                  <span>Turn OFF</span>
+                </button>
+              </div>
+              <span style="font-size: var(--font-size-xs); color: var(--color-text-muted); text-align: center;">
+                Connect to Bluetooth device to control
+              </span>
+            </div>
+          </article>
+
+          <!-- Outlet 2 -->
+          <article class="card outlet-card is-off" aria-label="Outlet 2 Control">
+            <div class="outlet-card-top">
+              <div class="outlet-identity">
+                <div class="outlet-icon-circle">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2v10"></path>
+                    <path d="M18.4 6.6a9 9 0 1 1-12.77 0"></path>
+                  </svg>
+                </div>
+                <div class="outlet-title-group">
+                  <span class="outlet-label">Outlet 2</span>
+                  <span class="outlet-sublabel">Simulated Relay Channel 2</span>
+                </div>
+              </div>
+              <div class="outlet-status-pill off">
+                <span class="pulse-dot offline"></span>
+                <span>OFFLINE</span>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <div class="outlet-actions-row">
+                <button type="button" class="btn btn-outlet-on" disabled>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="m9 12 2 2 4-4"></path>
+                  </svg>
+                  <span>Turn ON</span>
+                </button>
+                <button type="button" class="btn btn-outlet-off" disabled>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="m15 9-6 6"></path>
+                    <path d="m9 9 6 6"></path>
+                  </svg>
+                  <span>Turn OFF</span>
+                </button>
+              </div>
+              <span style="font-size: var(--font-size-xs); color: var(--color-text-muted); text-align: center;">
+                Connect to Bluetooth device to control
+              </span>
+            </div>
+          </article>
+        </div>
+
+        <!-- Master Control -->
+        <section class="card global-control-card" aria-label="Global Controls">
+          <div class="global-control-header">
+            <div>
+              <h2 class="global-control-title">Master Control</h2>
+              <span class="global-control-desc">Instantly disconnect power to all paired outlets</span>
+            </div>
+            <span class="pulse-dot offline" id="global-power-indicator"></span>
+          </div>
+          <button type="button" class="btn btn-danger btn-all-off" id="btn-all-off" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+              <line x1="12" y1="2" x2="12" y2="12"></line>
+            </svg>
+            <span>Turn All OFF</span>
+          </button>
+        </section>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+          <span>Bluetooth Low Energy • Direct Device Communication</span>
+          <span>Runs completely offline without Wi-Fi or Cloud Services</span>
+        </footer>
+      </main>
+    </div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

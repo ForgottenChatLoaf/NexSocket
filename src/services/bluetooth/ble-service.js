@@ -17,13 +17,13 @@ class BleService {
     if (this.isInitialized) return;
 
     const isNative = Capacitor.isNativePlatform();
-    // Use Mock adapter if in browser or if explicitly forced in dev
-    if (!isNative || APP_CONFIG.useMockBle) {
-      logger.info('Using Mock BLE Adapter (Browser/Dev mode)');
-      this.adapter = new MockBleAdapter();
-    } else {
-      logger.info('Using Native Capacitor BLE Adapter (Android)');
+    // On native Android, use real BLE hardware adapter. In web browser, use mock adapter.
+    if (isNative && !APP_CONFIG.forceMockOnNative) {
+      logger.info('Using Native Capacitor BLE Adapter (Android Hardware)');
       this.adapter = new CapacitorBleAdapter();
+    } else {
+      logger.info('Using Mock BLE Adapter (Browser / Dev simulation)');
+      this.adapter = new MockBleAdapter();
     }
 
     await this.adapter.initialize();

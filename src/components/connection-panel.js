@@ -1,3 +1,4 @@
+import { Capacitor } from '@capacitor/core';
 import { bleService } from '../services/bluetooth/ble-service.js';
 import { BLE_CONFIG } from '../services/bluetooth/ble-config.js';
 import { appState } from '../state/app-state.js';
@@ -11,6 +12,7 @@ export function renderConnectionPanel() {
   function update() {
     const { isScanning, isConnecting, connectedDevice } = appState.getState();
     const { connected } = outletState.getState();
+    const isNative = Capacitor.isNativePlatform();
 
     let statusLabel = 'Offline • Tap connect to discover';
     let statusClass = 'offline';
@@ -37,7 +39,7 @@ export function renderConnectionPanel() {
           <div class="connection-details">
             <div style="display: flex; align-items: center; gap: 0.5rem;">
               <span class="device-name">${BLE_CONFIG.deviceName}</span>
-              <span class="demo-badge">MOCK BLE</span>
+              <span class="demo-badge">${isNative ? 'BLE NATIVE' : 'MOCK BLE'}</span>
             </div>
             <span class="device-status-text">
               <span class="pulse-dot ${statusClass}"></span>
