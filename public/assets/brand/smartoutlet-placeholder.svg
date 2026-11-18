@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="none">
+  <!-- Rounded Base Plate -->
+  <rect x="4" y="4" width="40" height="40" rx="10" fill="#1E293B" stroke="#3B82F6" stroke-width="2.5"/>
+  <!-- Top Slot Left -->
+  <rect x="15" y="14" width="4" height="9" rx="2" fill="#38BDF8"/>
+  <!-- Top Slot Right -->
+  <rect x="29" y="14" width="4" height="9" rx="2" fill="#38BDF8"/>
+  <!-- Ground Pin / Power Arc -->
+  <path d="M24 28a4 4 0 0 1 4 4v2h-8v-2a4 4 0 0 1 4-4z" fill="#38BDF8"/>
+  <!-- Subtle Power Status Dot -->
+  <circle cx="24" cy="11" r="2" fill="#10B981"/>
+</svg>

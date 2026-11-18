@@ -1,27 +1,52 @@
+/* Base Card */
 .card {
   background-color: var(--color-bg-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: var(--spacing-lg);
-  box-shadow: var(--shadow-md);
-  transition: transform var(--transition-fast), border-color var(--transition-fast);
+  box-shadow: var(--shadow-card);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
 }
 
+.card:focus-within {
+  border-color: var(--color-border-focus);
+}
+
+/* Base Button */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: var(--min-touch-size);
   padding: var(--spacing-sm) var(--spacing-lg);
   border-radius: var(--radius-md);
+  font-family: inherit;
   font-weight: 600;
   font-size: var(--font-size-base);
+  line-height: 1.25;
   transition: all var(--transition-fast);
   gap: var(--spacing-sm);
+  cursor: pointer;
+  border: 1px solid transparent;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
+.btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  filter: grayscale(20%);
+}
+
+/* Button Variants */
 .btn-primary {
   background-color: var(--color-primary);
-  color: white;
+  color: #ffffff;
+  box-shadow: 0 2px 8px var(--color-primary-glow);
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -30,9 +55,201 @@
 
 .btn-danger {
   background-color: var(--color-danger);
-  color: white;
+  color: #ffffff;
+  box-shadow: 0 2px 8px var(--color-danger-glow);
 }
 
 .btn-danger:hover:not(:disabled) {
   background-color: var(--color-danger-hover);
+}
+
+.btn-secondary {
+  background-color: var(--color-bg-card-hover);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: #334155;
+}
+
+.btn-outline {
+  background-color: transparent;
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.btn-outline:hover:not(:disabled) {
+  background-color: var(--color-bg-card-hover);
+  color: var(--color-text-primary);
+  border-color: var(--color-text-secondary);
+}
+
+/* Outlet Control Button States */
+.btn-outlet-on {
+  background-color: var(--color-bg-card-hover);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+
+.btn-outlet-on.is-active {
+  background-color: var(--color-success);
+  color: #ffffff;
+  border-color: var(--color-success);
+  box-shadow: 0 0 12px var(--color-success-glow);
+}
+
+.btn-outlet-off {
+  background-color: var(--color-bg-card-hover);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+
+.btn-outlet-off.is-active {
+  background-color: #475569;
+  color: var(--color-text-primary);
+  border-color: #64748b;
+}
+
+/* Badges */
+.demo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background-color: var(--color-demo-badge-bg);
+  color: var(--color-demo-badge);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-full);
+}
+
+/* Spinner */
+.spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #ffffff;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Pulsing Status Dot */
+.pulse-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.pulse-dot.online {
+  background-color: var(--color-success);
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  animation: pulse-green 2s infinite;
+}
+
+.pulse-dot.offline {
+  background-color: var(--color-text-muted);
+}
+
+.pulse-dot.connecting {
+  background-color: var(--color-warning);
+  animation: pulse-yellow 1.5s infinite;
+}
+
+@keyframes pulse-green {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+@keyframes pulse-yellow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(245, 158, 11, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+  }
+}
+
+/* Modal Dialog */
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(3, 7, 18, 0.75);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--spacing-base);
+  animation: fadeIn var(--transition-fast) ease-out;
+}
+
+.dialog-modal {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  max-width: 420px;
+  width: 100%;
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-lg);
+  animation: scaleUp var(--transition-fast) ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Toast Notification */
+.notification-toast {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-base);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  margin-bottom: var(--spacing-md);
+  animation: slideDown var(--transition-normal) ease-out;
+  border-width: 1px;
+  border-style: solid;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

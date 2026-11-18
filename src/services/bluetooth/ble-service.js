@@ -33,9 +33,14 @@ class BleService {
   async startScan(onDeviceFound) {
     await this.init();
     appState.setState({ isScanning: true });
-    await this.adapter.scan((device) => {
-      if (onDeviceFound) onDeviceFound(device);
-    });
+    try {
+      await this.adapter.scan((device) => {
+        if (onDeviceFound) onDeviceFound(device);
+      });
+    } catch (err) {
+      appState.setState({ isScanning: false });
+      throw err;
+    }
   }
 
   async stopScan() {
@@ -63,11 +68,28 @@ class BleService {
       // Subscribe to status notifications
       await this.adapter.subscribeStatus((rawStatus) => {
         const parsed = BleProtocol.parseStatus(rawStatus);
+        const prev = outletState.getState();
+        
         outletState.setState({
           outlet1: parsed.outlet1,
           outlet2: parsed.outlet2,
           isPending: false,
         });
+
+        // Provide feedback when state transitions occur after initial connection
+        if (prev.connected) {
+          if (!prev.outlet1 && parsed.outlet1 && prev.outlet2 === parsed.outlet2) {
+            appState.setState({ notification: { type: 'success', message: 'Outlet 1 confirmed ON' } });
+          } else if (prev.outlet1 && !parsed.outlet1 && prev.outlet2 === parsed.outlet2) {
+            appState.setState({ notification: { type: 'info', message: 'Outlet 1 confirmed OFF' } });
+          } else if (!prev.outlet2 && parsed.outlet2 && prev.outlet1 === parsed.outlet1) {
+            appState.setState({ notification: { type: 'success', message: 'Outlet 2 confirmed ON' } });
+          } else if (prev.outlet2 && !parsed.outlet2 && prev.outlet1 === parsed.outlet1) {
+            appState.setState({ notification: { type: 'info', message: 'Outlet 2 confirmed OFF' } });
+          } else if ((prev.outlet1 || prev.outlet2) && !parsed.outlet1 && !parsed.outlet2) {
+            appState.setState({ notification: { type: 'info', message: 'All outlets confirmed OFF' } });
+          }
+        }
       });
     } catch (err) {
       appState.setState({ isConnecting: false });
@@ -102,7 +124,12 @@ class BleService {
       throw new Error('Device is not connected');
     }
     outletState.setState({ isPending: true });
-    await this.adapter.writeCommand(commandByte);
+    try {
+      await this.adapter.writeCommand(commandByte);
+    } catch (err) {
+      outletState.setState({ isPending: false });
+      throw err;
+    }
   }
 }
 
