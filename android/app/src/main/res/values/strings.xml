@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SmartOutlet</string>
+    <string name="title_activity_main">SmartOutlet</string>
+    <string name="package_name">com.smartoutlet.app</string>
+    <string name="custom_url_scheme">com.smartoutlet.app</string>
+</resources>
