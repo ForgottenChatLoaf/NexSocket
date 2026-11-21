@@ -12,6 +12,8 @@ export function openNavigationDrawer(onOpenSettings) {
   backdrop.className = 'drawer-backdrop';
 
   const { connected } = outletState.getState();
+  const { operationMode } = appState.getState();
+  const isDemo = operationMode === 'demo';
 
   backdrop.innerHTML = `
     <div class="drawer-panel" role="dialog" aria-label="Main Navigation">
@@ -40,7 +42,7 @@ export function openNavigationDrawer(onOpenSettings) {
             ${connected ? 'Connected: ' + BLE_CONFIG.deviceName : 'Disconnected (Offline)'}
           </span>
         </div>
-        <span class="demo-badge">MOCK BLE</span>
+        <span class="demo-badge">${isDemo ? 'SIMULATOR' : 'LIVE BLE'}</span>
       </div>
 
       <!-- Navigation Links -->
@@ -106,11 +108,12 @@ export function openNavigationDrawer(onOpenSettings) {
   document.body.style.overflow = 'hidden'; // Lock background scroll
 
   const close = () => {
+    if (backdrop.classList.contains('closing')) return;
     backdrop.classList.add('closing');
     setTimeout(() => {
       backdrop.remove();
       document.body.style.overflow = '';
-    }, 200);
+    }, 240);
   };
 
   backdrop.querySelector('#btn-close-drawer').onclick = close;

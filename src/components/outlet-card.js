@@ -15,6 +15,14 @@ export function renderOutletCard(outletNumber) {
     const isOn = Boolean(state[outletKey]);
     const isConnected = state.connected;
     const isPending = Boolean(state.isPending);
+    const cmd = state.commandLifecycle?.command;
+    const isThisOutletPending = isPending && (
+      (outletNumber === 1 && (cmd === 0x01 || cmd === 0x02)) ||
+      (outletNumber === 2 && (cmd === 0x03 || cmd === 0x04)) ||
+      cmd === 0x05 || cmd === 0x06 || !cmd
+    );
+    const isActivatingThis = isThisOutletPending && (cmd === 0x01 || cmd === 0x03 || cmd === 0x06 || !isOn);
+    const isShuttingThis = isThisOutletPending && (cmd === 0x02 || cmd === 0x04 || cmd === 0x05 || isOn);
     const outletName = (state.names && state.names[outletKey]) || `Outlet ${outletNumber}`;
 
     // Update active class on card wrapper
@@ -71,7 +79,7 @@ export function renderOutletCard(outletNumber) {
             aria-pressed="${isOn}"
           >
             ${
-              isPending && !isOn
+              isActivatingThis
                 ? `<span class="spinner" style="width: 14px; height: 14px; border-width: 2px;"></span>
                    <span>Activating...</span>`
                 : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -90,7 +98,7 @@ export function renderOutletCard(outletNumber) {
             aria-pressed="${!isOn}"
           >
             ${
-              isPending && isOn
+              isShuttingThis
                 ? `<span class="spinner" style="width: 14px; height: 14px; border-width: 2px;"></span>
                    <span>Shutting down...</span>`
                 : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">

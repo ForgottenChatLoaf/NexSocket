@@ -7,9 +7,15 @@ class AppState {
       isScanning: false,
       isConnecting: false,
       connectedDevice: null,
+      operationMode: 'demo', // 'demo' (Simulated ESP32) | 'hardware' (Real ESP32-C3)
       notification: null, // { type: 'success' | 'error' | 'info', message: string }
     };
     this.listeners = new Set();
+  }
+
+  setOperationMode(mode) {
+    if (mode !== 'demo' && mode !== 'hardware') return;
+    this.setState({ operationMode: mode });
   }
 
   getState() {

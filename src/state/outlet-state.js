@@ -43,12 +43,30 @@ class OutletState {
       outlet2: false,
       connected: false,
       isPending: false,
+      commandLifecycle: {
+        status: 'idle', // 'idle' | 'pending' | 'confirmed' | 'failed'
+        command: null,
+        timestamp: null,
+        error: null,
+      },
       rssi: -58,
       names: loadStoredNames(),
       autoReconnect: loadStoredAutoReconnect(),
       history: loadStoredHistory(),
     };
     this.listeners = new Set();
+  }
+
+  setCommandLifecycle(status, command = null, error = null) {
+    this.setState({
+      commandLifecycle: {
+        status,
+        command,
+        timestamp: Date.now(),
+        error,
+      },
+      isPending: status === 'pending',
+    });
   }
 
   getState() {
