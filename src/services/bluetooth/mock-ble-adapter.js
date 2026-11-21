@@ -102,6 +102,13 @@ export class MockBleAdapter {
         o1 = false;
         o2 = false;
         break;
+      case BLE_COMMANDS.ALL_ON:
+        o1 = true;
+        o2 = true;
+        break;
+      case BLE_COMMANDS.GET_STATUS:
+        // Query status without modifying state
+        break;
       default:
         throw new Error(`Unknown command byte: ${commandByte}`);
     }

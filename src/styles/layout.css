@@ -1,5 +1,6 @@
 #app {
   min-height: 100vh;
+  min-height: 100dvh; /* Dynamic Viewport Height for mobile browser toolbars */
   display: flex;
   flex-direction: column;
   padding-top: env(safe-area-inset-top, 0px);

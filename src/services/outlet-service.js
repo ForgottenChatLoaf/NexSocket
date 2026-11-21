@@ -58,4 +58,34 @@ export const outletService = {
     await bleService.sendCommand(BLE_COMMANDS.ALL_OFF);
     return { success: true, command: BLE_COMMANDS.ALL_OFF };
   },
+
+  /**
+   * Turn all outlets ON (Master activate)
+   */
+  async allOn() {
+    const currentState = outletState.getState();
+    if (!currentState.connected) {
+      throw new Error('Cannot energize outlets: Bluetooth device is disconnected');
+    }
+    if (currentState.isPending) {
+      throw new Error('A previous command is still pending confirmation');
+    }
+
+    logger.debug('Executing Master Activate: All Outlets ON');
+    await bleService.sendCommand(BLE_COMMANDS.ALL_ON);
+    return { success: true, command: BLE_COMMANDS.ALL_ON };
+  },
+
+  /**
+   * Request fresh status from peripheral
+   */
+  async requestStatus() {
+    const currentState = outletState.getState();
+    if (!currentState.connected) {
+      throw new Error('Cannot query status: Bluetooth device is disconnected');
+    }
+    logger.debug('Querying peripheral device status');
+    await bleService.sendCommand(BLE_COMMANDS.GET_STATUS);
+    return { success: true, command: BLE_COMMANDS.GET_STATUS };
+  },
 };

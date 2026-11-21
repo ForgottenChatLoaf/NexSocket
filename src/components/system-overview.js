@@ -45,7 +45,7 @@ export function renderSystemOverview() {
         </div>
         <div class="overview-metric ${connected && activeCount > 0 ? 'is-active' : ''}">
           <span class="metric-value active-val">${connected ? activeCount : '—'}</span>
-          <span class="metric-label">Active Power</span>
+          <span class="metric-label">Active Outlets</span>
         </div>
         <div class="overview-metric">
           <span class="metric-value">${connected ? inactiveCount : '—'}</span>

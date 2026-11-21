@@ -78,6 +78,14 @@ describe('outletService', () => {
     await outletService.allOff();
     expect(sentCommand).toBe(BLE_COMMANDS.ALL_OFF);
 
+    // Test ALL ON
+    await outletService.allOn();
+    expect(sentCommand).toBe(BLE_COMMANDS.ALL_ON);
+
+    // Test GET STATUS
+    await outletService.requestStatus();
+    expect(sentCommand).toBe(BLE_COMMANDS.GET_STATUS);
+
     // Restore original function
     bleService.sendCommand = originalSendCommand;
   });
