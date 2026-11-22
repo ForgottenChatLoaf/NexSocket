@@ -1,5 +1,6 @@
 import { APP_CONFIG } from '../config/app-config.js';
 import { BLE_CONFIG } from '../services/bluetooth/ble-config.js';
+import { bleService } from '../services/bluetooth/ble-service.js';
 import { outletState } from '../state/outlet-state.js';
 import { appState } from '../state/app-state.js';
 
@@ -227,9 +228,14 @@ export function openAboutModal() {
         </div>
       </div>
 
-      <button class="btn btn-secondary" id="btn-about-ok" style="width: 100%; margin-top: 1.25rem;">
-        Done
-      </button>
+      <div style="display: flex; gap: 0.5rem; margin-top: 1.25rem;">
+        <button class="btn btn-secondary" id="btn-about-ok" style="flex: 1;">
+          Done
+        </button>
+        <button class="btn btn-primary" id="btn-about-demo" style="flex: 1.2; background: var(--color-blue); border-color: var(--color-blue);">
+          ⚡ Run Demo
+        </button>
+      </div>
     </div>
   `;
 
@@ -238,6 +244,29 @@ export function openAboutModal() {
   const close = () => backdrop.remove();
   backdrop.querySelector('#btn-close-about').onclick = close;
   backdrop.querySelector('#btn-about-ok').onclick = close;
+
+  const btnDemo = backdrop.querySelector('#btn-about-demo');
+  if (btnDemo) {
+    btnDemo.onclick = async () => {
+      close();
+      appState.setOperationMode('demo');
+      await bleService.init();
+      if (!outletState.getState().connected) {
+        await bleService.startScan(async (device) => {
+          await bleService.stopScan();
+          await bleService.connect(device.deviceId);
+        });
+      }
+      appState.setActiveTab('home');
+      appState.setState({
+        notification: {
+          type: 'success',
+          message: '🎓 Demonstration Started: Simulated ESP32-C3 connected!',
+        },
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+  }
   backdrop.onclick = (e) => {
     if (e.target === backdrop) close();
   };
