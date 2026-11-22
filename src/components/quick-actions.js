@@ -71,6 +71,7 @@ export function renderQuickActions() {
           message: 'This will immediately supply electrical power to both Outlet 1 and Outlet 2.',
           confirmText: 'Turn All ON',
           cancelText: 'Cancel',
+          type: 'primary',
           onConfirm: async () => {
             try {
               await outletService.allOn();

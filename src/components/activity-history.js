@@ -15,7 +15,7 @@ export function renderActivityHistory() {
       <div class="history-header">
         <div class="history-title-group">
           <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-brand-cyan);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-blue-light);">
               <circle cx="12" cy="12" r="10"></circle>
               <polyline points="12 6 12 12 16 14"></polyline>
             </svg>
@@ -26,8 +26,8 @@ export function renderActivityHistory() {
         </div>
 
         <div class="history-actions">
-          ${count > 0 ? `<button class="btn-text-danger" id="btn-clear-history" title="Clear History">Clear</button>` : ''}
-          <button class="btn-icon-sm" id="btn-toggle-history" aria-label="${isCollapsed ? 'Expand history' : 'Collapse history'}">
+          ${count > 0 ? `<button type="button" class="btn-text-danger" id="btn-clear-history" title="Clear History">Clear</button>` : ''}
+          <button type="button" class="btn-icon-sm" id="btn-toggle-history" aria-label="${isCollapsed ? 'Expand history' : 'Collapse history'}">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transform: ${isCollapsed ? 'rotate(-90deg)' : 'rotate(0deg)'}; transition: transform var(--transition-fast);">
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
@@ -58,9 +58,15 @@ export function renderActivityHistory() {
                      } else if (item.type === 'power-off') {
                        iconClass = 'power-off';
                        iconSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>`;
+                     } else if (item.type === 'all-on') {
+                       iconClass = 'all-on';
+                       iconSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>`;
                      } else if (item.type === 'all-off') {
                        iconClass = 'all-off';
-                       iconSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>`;
+                       iconSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>`;
+                     } else if (item.type === 'error') {
+                       iconClass = 'error';
+                       iconSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
                      } else {
                        iconClass = 'bluetooth';
                        iconSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>`;
