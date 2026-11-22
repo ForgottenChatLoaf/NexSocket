@@ -108,8 +108,14 @@ export function openNavigationDrawer(onOpenSettings) {
   document.body.appendChild(backdrop);
   document.body.style.overflow = 'hidden'; // Lock background scroll
 
+  const drawerPanel = backdrop.querySelector('.drawer-panel');
+
   const close = () => {
     if (backdrop.classList.contains('closing')) return;
+    window.removeEventListener('keydown', handleKey);
+    window.removeEventListener('pointermove', onPointerMove);
+    window.removeEventListener('pointerup', onPointerUp);
+    window.removeEventListener('pointercancel', onPointerUp);
     backdrop.classList.add('closing');
     setTimeout(() => {
       backdrop.remove();
@@ -117,19 +123,81 @@ export function openNavigationDrawer(onOpenSettings) {
     }, 240);
   };
 
-  backdrop.querySelector('#btn-close-drawer').onclick = close;
-  backdrop.onclick = (e) => {
-    if (e.target === backdrop) close();
-  };
-
   // Keyboard accessibility
   const handleKey = (e) => {
     if (e.key === 'Escape') {
       close();
-      window.removeEventListener('keydown', handleKey);
     }
   };
   window.addEventListener('keydown', handleKey);
+
+  // Touch & Pointer Swipe-to-Close Gestures (Mobile UX)
+  let startX = 0;
+  let startY = 0;
+  let currentTranslateX = 0;
+  let isSwiping = false;
+  let isTracking = false;
+
+  const onPointerDown = (e) => {
+    if (e.isPrimary === false) return;
+    startX = e.clientX;
+    startY = e.clientY;
+    currentTranslateX = 0;
+    isSwiping = false;
+    isTracking = true;
+    if (drawerPanel) drawerPanel.style.transition = 'none';
+  };
+
+  const onPointerMove = (e) => {
+    if (!isTracking) return;
+    const diffX = e.clientX - startX;
+    const diffY = e.clientY - startY;
+
+    if (!isSwiping) {
+      if (Math.abs(diffX) > 10 && Math.abs(diffX) > Math.abs(diffY)) {
+        isSwiping = true;
+      } else if (Math.abs(diffY) > 10) {
+        isTracking = false;
+        return;
+      }
+    }
+
+    if (isSwiping && diffX < 0 && drawerPanel) {
+      currentTranslateX = diffX;
+      drawerPanel.style.transform = `translateX(${diffX}px)`;
+      const opacity = Math.max(0.15, 1 - Math.abs(diffX) / 280);
+      backdrop.style.backgroundColor = `rgba(0, 0, 0, ${opacity * 0.65})`;
+    }
+  };
+
+  const onPointerUp = () => {
+    if (!isTracking && !isSwiping) return;
+    isTracking = false;
+    if (drawerPanel) {
+      drawerPanel.style.transition = 'transform 200ms cubic-bezier(0.16, 1, 0.3, 1)';
+    }
+
+    if (isSwiping && currentTranslateX < -50) {
+      backdrop.style.backgroundColor = '';
+      close();
+    } else {
+      if (drawerPanel) drawerPanel.style.transform = '';
+      backdrop.style.backgroundColor = '';
+    }
+    isSwiping = false;
+  };
+
+  if (drawerPanel) {
+    drawerPanel.addEventListener('pointerdown', onPointerDown, { passive: true });
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+    window.addEventListener('pointerup', onPointerUp, { passive: true });
+    window.addEventListener('pointercancel', onPointerUp, { passive: true });
+  }
+
+  backdrop.querySelector('#btn-close-drawer').onclick = close;
+  backdrop.onclick = (e) => {
+    if (e.target === backdrop) close();
+  };
 
   // Link actions
   backdrop.querySelectorAll('.drawer-link').forEach((btn) => {

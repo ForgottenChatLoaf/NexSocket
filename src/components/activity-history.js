@@ -1,15 +1,16 @@
 import { outletState } from '../state/outlet-state.js';
 
-export function renderActivityHistory() {
+export function renderActivityHistory(isCompactPreview = false) {
   const section = document.createElement('section');
-  section.className = 'card activity-history-card';
-  section.setAttribute('aria-label', 'Activity History');
+  section.className = `card activity-history-card ${isCompactPreview ? 'compact-preview' : ''}`;
+  section.setAttribute('aria-label', isCompactPreview ? 'Recent Activity Preview' : 'Activity History');
 
   let isCollapsed = false;
 
   function update() {
     const { history } = outletState.getState();
     const count = (history || []).length;
+    const itemsToDisplay = isCompactPreview ? (history || []).slice(0, 3) : (history || []);
 
     section.innerHTML = `
       <div class="history-header">
@@ -19,19 +20,21 @@ export function renderActivityHistory() {
               <circle cx="12" cy="12" r="10"></circle>
               <polyline points="12 6 12 12 16 14"></polyline>
             </svg>
-            <h2 class="history-title">Activity History</h2>
+            <h2 class="history-title">${isCompactPreview ? 'Recent Activity' : 'Activity History'}</h2>
             <span class="history-count-badge">${count}</span>
           </div>
-          <span class="history-sublabel">Live log of relay and Bluetooth events</span>
+          <span class="history-sublabel">${isCompactPreview ? 'Latest 3 device events' : 'Live log of relay switching & Bluetooth events'}</span>
         </div>
 
         <div class="history-actions">
-          ${count > 0 ? `<button type="button" class="btn-text-danger" id="btn-clear-history" title="Clear History">Clear</button>` : ''}
-          <button type="button" class="btn-icon-sm" id="btn-toggle-history" aria-label="${isCollapsed ? 'Expand history' : 'Collapse history'}">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transform: ${isCollapsed ? 'rotate(-90deg)' : 'rotate(0deg)'}; transition: transform var(--transition-fast);">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-          </button>
+          ${!isCompactPreview && count > 0 ? `<button type="button" class="btn-text-danger" id="btn-clear-history" title="Clear History">Clear</button>` : ''}
+          ${!isCompactPreview ? `
+            <button type="button" class="btn-icon-sm" id="btn-toggle-history" aria-label="${isCollapsed ? 'Expand history' : 'Collapse history'}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transform: ${isCollapsed ? 'rotate(-90deg)' : 'rotate(0deg)'}; transition: transform var(--transition-fast);">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+          ` : ''}
         </div>
       </div>
 
@@ -48,7 +51,7 @@ export function renderActivityHistory() {
                  <span style="font-size: var(--font-size-xs); color: var(--color-text-muted);">Events will appear here as outlets are toggled</span>
                </div>`
             : `<div class="history-items-list">
-                 ${history
+                 ${itemsToDisplay
                    .map((item) => {
                      let iconSvg = '';
                      let iconClass = 'ble';

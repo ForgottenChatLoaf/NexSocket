@@ -618,14 +618,18 @@
 /* ==========================================================================
    Quick Actions Bar (Dual Master Controls)
    ========================================================================== */
+/* ==========================================================================
+   Quick Actions Bar (Compact Master Controls)
+   ========================================================================== */
 .quick-actions-card {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: 0.65rem;
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
-  padding: var(--spacing-md);
+  padding: 0.875rem 1rem;
+  box-shadow: var(--shadow-card);
 }
 
 .quick-actions-header {
@@ -634,7 +638,7 @@
 }
 
 .quick-actions-eyebrow {
-  font-size: 0.65rem;
+  font-size: 0.625rem;
   font-weight: var(--font-weight-bold);
   color: var(--color-blue);
   letter-spacing: 0.08em;
@@ -642,15 +646,16 @@
 }
 
 .quick-actions-title {
-  font-size: var(--font-size-base);
+  font-size: 0.9rem;
   font-weight: var(--font-weight-bold);
   color: var(--color-text);
+  line-height: 1.2;
 }
 
 .quick-actions-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--spacing-sm);
+  gap: 0.65rem;
   width: 100%;
 }
 
@@ -658,13 +663,13 @@
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  padding: 0.75rem 0.65rem;
+  padding: 0.6rem 0.75rem;
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
   cursor: pointer;
   background-color: var(--color-surface-elevated);
   transition: all var(--transition-fast);
-  min-height: 54px;
+  min-height: 48px;
   text-align: left;
 }
 
@@ -683,28 +688,28 @@
 }
 
 .btn-quick-on {
-  border-color: rgba(16, 185, 129, 0.35);
+  border-color: rgba(16, 185, 129, 0.3);
 }
 
 .btn-quick-on:hover:not(:disabled) {
   border-color: var(--color-primary);
-  background-color: var(--color-primary-bg);
-  box-shadow: 0 0 14px var(--color-primary-glow);
+  background-color: var(--color-primary-soft);
+  box-shadow: 0 0 12px var(--color-primary-glow);
 }
 
 .btn-quick-off {
-  border-color: rgba(249, 115, 22, 0.35);
+  border-color: rgba(249, 115, 22, 0.3);
 }
 
 .btn-quick-off:hover:not(:disabled) {
   border-color: var(--color-danger);
   background-color: var(--color-danger-bg);
-  box-shadow: 0 0 14px var(--color-danger-glow);
+  box-shadow: 0 0 12px var(--color-danger-glow);
 }
 
 .quick-action-icon-circle {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
@@ -713,7 +718,7 @@
 }
 
 .quick-action-icon-circle.on-icon {
-  background-color: var(--color-primary-bg);
+  background-color: var(--color-primary-soft);
   color: var(--color-primary);
   border: 1px solid rgba(16, 185, 129, 0.4);
 }
@@ -731,7 +736,7 @@
 }
 
 .quick-action-label {
-  font-size: var(--font-size-sm);
+  font-size: 0.825rem;
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
   line-height: 1.2;

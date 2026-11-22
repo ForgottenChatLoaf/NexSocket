@@ -18,15 +18,19 @@ export function renderDashboard() {
   // 1. Persistent Desktop Sidebar (Visible on screens >= 1024px)
   shell.appendChild(renderDesktopSidebar());
 
-  // 2. Main Content Container
+  // 2. Main Content Workspace Container
   const mainContent = document.createElement('div');
   mainContent.className = 'main-layout-container';
 
+  // Centered & Proportion-Constrained Inner Workspace
+  const innerContent = document.createElement('div');
+  innerContent.className = 'main-content-inner';
+
   // Persistent Top Header
-  mainContent.appendChild(renderHeader());
+  innerContent.appendChild(renderHeader());
 
   // Toast Notification Host
-  mainContent.appendChild(renderNotification());
+  innerContent.appendChild(renderNotification());
 
   // Dynamic View Container (Controlled by activeTab in appState)
   const tabContent = document.createElement('div');
@@ -41,7 +45,7 @@ export function renderDashboard() {
       const homeView = document.createElement('div');
       homeView.className = 'tab-view home-view';
 
-      // 1. Hero Greeting
+      // 1. Hero Greeting (Compact & Intentional)
       const hero = document.createElement('div');
       hero.className = 'dashboard-hero';
       hero.innerHTML = `
@@ -51,13 +55,14 @@ export function renderDashboard() {
       `;
       homeView.appendChild(hero);
 
-      // 2. Compact Connection Summary
-      homeView.appendChild(renderConnectionSummary());
+      // 2. Top Status Row (Side-by-side on desktop/tablet, stacked on mobile)
+      const topStatusRow = document.createElement('div');
+      topStatusRow.className = 'dashboard-top-status-row';
+      topStatusRow.appendChild(renderConnectionSummary());
+      topStatusRow.appendChild(renderSystemOverview());
+      homeView.appendChild(topStatusRow);
 
-      // 3. System Overview
-      homeView.appendChild(renderSystemOverview());
-
-      // 4. Section Title: Power Outlets
+      // 3. Section Title: Power Outlets
       const sectionRow = document.createElement('div');
       sectionRow.className = 'section-title-row';
       sectionRow.innerHTML = `
@@ -66,20 +71,20 @@ export function renderDashboard() {
       `;
       homeView.appendChild(sectionRow);
 
-      // 5. Independent Outlet Cards Grid
+      // 4. Independent Outlet Cards Grid (Balanced 2 columns on desktop)
       const grid = document.createElement('div');
       grid.className = 'outlet-grid';
       grid.appendChild(renderOutletCard(1));
       grid.appendChild(renderOutletCard(2));
       homeView.appendChild(grid);
 
-      // 6. Master Power Controls
+      // 5. Master Power Controls (Compact Quick Actions)
       homeView.appendChild(renderQuickActions());
 
-      // 7. Recent Activity Preview (with shortcut to Activity tab)
+      // 6. Recent Activity Preview (Compact list with link to full log)
       const activityWrapper = document.createElement('div');
       activityWrapper.className = 'home-activity-wrapper';
-      activityWrapper.appendChild(renderActivityHistory());
+      activityWrapper.appendChild(renderActivityHistory(true)); // true = compact preview mode
 
       const viewMoreRow = document.createElement('div');
       viewMoreRow.className = 'view-more-activity-row';
@@ -142,8 +147,8 @@ export function renderDashboard() {
       `;
       activityView.appendChild(actHeader);
 
-      // Full Activity History component
-      activityView.appendChild(renderActivityHistory());
+      // Full Activity History component (complete audit trail)
+      activityView.appendChild(renderActivityHistory(false));
 
       tabContent.appendChild(activityView);
 
@@ -159,7 +164,8 @@ export function renderDashboard() {
   appState.subscribe(renderActiveTab);
   renderActiveTab();
 
-  mainContent.appendChild(tabContent);
+  innerContent.appendChild(tabContent);
+  mainContent.appendChild(innerContent);
   shell.appendChild(mainContent);
 
   // 3. Persistent Mobile Bottom Navigation Bar (Visible on mobile/tablet)

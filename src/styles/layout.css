@@ -1,3 +1,7 @@
+/* ==========================================================================
+   NexSocket Layout Architecture (Phase 5.1 Recovery Standard)
+   ========================================================================== */
+
 #app {
   min-height: 100vh;
   min-height: 100dvh;
@@ -13,15 +17,24 @@
   min-height: 100vh;
   min-height: 100dvh;
   width: 100%;
+  background-color: var(--color-background);
 }
 
+/* Mobile & Base Layout Container */
 .main-layout-container {
   flex: 1;
   width: 100%;
-  max-width: 640px;
-  margin: 0 auto;
-  padding: var(--spacing-sm) var(--spacing-md);
-  padding-bottom: calc(74px + env(safe-area-inset-bottom, 0px));
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem 1rem calc(4.75rem + env(safe-area-inset-bottom, 0px)) 1rem;
+}
+
+/* Inner Centered & Proportion-Constrained Workspace */
+.main-content-inner {
+  width: 100%;
+  max-width: 32rem; /* Mobile portrait default */
+  margin-inline: auto;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
@@ -38,20 +51,35 @@
   animation: fadeIn var(--transition-normal);
 }
 
-/* Desktop Sidebar Hidden on Mobile & Tablets */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Dashboard Top Status Row (Connection Summary + System Overview) */
+.dashboard-top-status-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+
+/* Desktop Sidebar Hidden on Mobile */
 .desktop-sidebar {
   display: none;
 }
 
-/* Mobile Bottom Navigation Bar */
+/* ==========================================================================
+   Mobile Bottom Navigation Bar
+   ========================================================================== */
 .bottom-nav-bar {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  height: calc(64px + env(safe-area-inset-bottom, 0px));
+  height: calc(4rem + env(safe-area-inset-bottom, 0px));
   padding-bottom: env(safe-area-inset-bottom, 0px);
-  background-color: rgba(23, 29, 39, 0.95);
+  background-color: rgba(23, 29, 39, 0.96);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-top: 1px solid var(--color-border);
@@ -59,7 +87,7 @@
   align-items: center;
   justify-content: space-around;
   z-index: 1000;
-  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.45);
 }
 
 .bottom-nav-item {
@@ -117,37 +145,95 @@
 }
 
 /* ==========================================================================
+   Tablet Breakpoint (680px - 1023px)
+   ========================================================================== */
+@media (min-width: 680px) {
+  .main-content-inner {
+    max-width: 46rem;
+  }
+
+  .dashboard-top-status-row {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: var(--spacing-md);
+    align-items: stretch;
+  }
+}
+
+/* ==========================================================================
    Desktop Responsive Shell (>= 1024px)
    ========================================================================== */
 @media (min-width: 1024px) {
   .app-shell {
     flex-direction: row;
     height: 100vh;
+    height: 100dvh;
     overflow: hidden;
   }
 
+  /* Fixed, Stable Left Sidebar */
   .desktop-sidebar {
     display: flex;
     flex-direction: column;
-    width: 260px;
+    width: 17rem; /* ~272px stable width */
+    height: 100%;
     background-color: var(--color-surface);
     border-right: 1px solid var(--color-border);
     padding: var(--spacing-lg) var(--spacing-md);
     flex-shrink: 0;
     overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-scroll-thumb) var(--color-scroll-track);
+  }
+
+  /* Main Workspace */
+  .main-layout-container {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1.5rem 2rem 3rem 2rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-scroll-thumb) var(--color-scroll-track);
+  }
+
+  /* Proportional Centered Workspace Container */
+  .main-content-inner {
+    max-width: 68rem;
+    margin-inline: auto;
+    gap: var(--spacing-lg);
+  }
+
+  /* Hide mobile bottom navigation on desktop */
+  .bottom-nav-bar {
+    display: none;
+  }
+}
+
+/* Large Displays (>= 1440px) */
+@media (min-width: 1440px) {
+  .desktop-sidebar {
+    width: 17.5rem;
+  }
+
+  .main-content-inner {
+    max-width: 74rem;
   }
 
   .main-layout-container {
-    max-width: 1100px;
-    margin: 0;
-    padding: var(--spacing-lg) var(--spacing-xl);
-    padding-bottom: var(--spacing-2xl);
-    overflow-y: auto;
-    height: 100%;
+    padding: 2rem 2.5rem 4rem 2.5rem;
+  }
+}
+
+/* Ultra-Wide Displays (>= 1920px) */
+@media (min-width: 1920px) {
+  .main-content-inner {
+    max-width: 78rem;
   }
 
-  /* Bottom nav is hidden on desktop */
-  .bottom-nav-bar {
-    display: none;
+  .main-layout-container {
+    padding: 2.25rem 3rem 4rem 3rem;
   }
 }
