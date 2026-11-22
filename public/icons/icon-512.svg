@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="102" fill="#0E1117"/>
+  <rect x="41" y="41" width="430" height="430" rx="72" fill="#171D27"/>
+  <!-- Power circle arc -->
+  <circle cx="256" cy="256" r="136.04" fill="none" stroke="#10B981" stroke-width="28" stroke-linecap="round" stroke-dasharray="641 214" stroke-dashoffset="107" transform="rotate(-90 256 256)"/>
+  <!-- Power line -->
+  <line x1="256" y1="113" x2="256" y2="256" stroke="#10B981" stroke-width="28" stroke-linecap="round"/>
+</svg>
