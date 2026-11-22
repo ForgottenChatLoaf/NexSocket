@@ -2,6 +2,7 @@ import { Capacitor } from '@capacitor/core';
 import { bleService } from '../services/bluetooth/ble-service.js';
 import { BLE_CONFIG } from '../services/bluetooth/ble-config.js';
 import { COMMAND_NAMES, COMMAND_STATUS } from '../services/bluetooth/command-lifecycle.js';
+import { isWebBluetoothSupported } from '../services/bluetooth/web-ble-adapter.js';
 import { appState } from '../state/app-state.js';
 import { outletState } from '../state/outlet-state.js';
 import { renderConfirmationDialog } from './confirmation-dialog.js';
@@ -180,7 +181,7 @@ export function renderConnectionPanel() {
           </button>
 
           <div class="welcome-banner-footer">
-            <span class="welcome-badge">${isDemo ? 'DEMO SIMULATOR' : 'LIVE HARDWARE (PHASE 3)'}</span>
+            <span class="welcome-badge">${isDemo ? 'DEMO SIMULATOR' : (isNative ? 'ANDROID BLE NATIVE' : 'WEB BLUETOOTH')}</span>
             <span>Target: ESP32-C3 Super Mini · ${isDemo ? 'Virtual Peripheral' : 'Physical GATT Link'}</span>
           </div>
         </div>
@@ -204,24 +205,28 @@ export function renderConnectionPanel() {
     if (btnModeHardware) {
       btnModeHardware.onclick = async () => {
         if (isDemo) {
-          if (!isNative) {
-            // Web browser hardware notice
+          if (!isNative && !isWebBluetoothSupported()) {
+            // Web browser does not support Web Bluetooth
             const dialog = renderConfirmationDialog({
-              title: 'Hardware Mode (Web Bluetooth)',
-              message: 'Live Hardware connection in web browsers is scheduled for Phase 3 via Web Bluetooth API (requiring Chrome and an HTTPS origin). You can switch now to preview the hardware UI, or stay in Demo Mode for full simulated outlet switching.',
-              confirmText: 'Switch to Hardware UI',
-              cancelText: 'Stay in Demo Mode',
-              onConfirm: async () => {
-                await bleService.switchMode('hardware');
-                appState.setState({
-                  notification: { type: 'info', message: 'Switched to Live Hardware Mode (Phase 3 preview)' },
-                });
-              },
+              title: 'Web Bluetooth Not Supported',
+              message: 'Your current browser does not support the Web Bluetooth API. Please use Google Chrome or Microsoft Edge on localhost or HTTPS to communicate directly with your ESP32-C3 hardware.',
+              confirmText: 'Stay in Demo Mode',
+              cancelText: 'Dismiss',
+              onConfirm: async () => {},
             });
             document.body.appendChild(dialog);
-          } else {
-            await bleService.switchMode('hardware');
+            return;
           }
+
+          await bleService.switchMode('hardware');
+          appState.setState({
+            notification: {
+              type: 'info',
+              message: isNative
+                ? 'Switched to Hardware Mode (Native Android BLE)'
+                : 'Switched to Hardware Mode (Web Bluetooth API ready)',
+            },
+          });
         }
       };
     }
@@ -230,19 +235,14 @@ export function renderConnectionPanel() {
     const btnConnect = panel.querySelector('#btn-connect');
     if (btnConnect) {
       btnConnect.onclick = async () => {
-        if (!isDemo && !isNative) {
+        if (!isDemo && !isNative && !isWebBluetoothSupported()) {
           const dialog = renderConfirmationDialog({
-            title: 'Phase 3: Web Bluetooth API',
-            message: 'Physical ESP32 hardware scanning in web browsers is scheduled for Phase 3 (Web Bluetooth implementation). For browser visual QA and testing today, please switch to Demo Mode.',
-            confirmText: 'Switch to Demo Mode & Connect',
-            cancelText: 'Close',
+            title: 'Web Bluetooth Required',
+            message: 'Direct browser Bluetooth requires Google Chrome or Microsoft Edge on a secure origin (localhost or HTTPS). Please switch back to Demo Mode for browser simulation.',
+            confirmText: 'Switch to Demo Mode',
+            cancelText: 'Cancel',
             onConfirm: async () => {
               await bleService.switchMode('demo');
-              // Automatically trigger connect on the simulated adapter
-              setTimeout(() => {
-                const btn = panel.querySelector('#btn-connect');
-                if (btn) btn.click();
-              }, 100);
             },
           });
           document.body.appendChild(dialog);

@@ -4,6 +4,7 @@ import { BLE_CONFIG } from './ble-config.js';
 import { BLE_COMMANDS } from './ble-commands.js';
 import { MockBleAdapter } from './mock-ble-adapter.js';
 import { CapacitorBleAdapter } from './capacitor-ble-adapter.js';
+import { WebBleAdapter, isWebBluetoothSupported } from './web-ble-adapter.js';
 import { BleProtocol } from './ble-protocol.js';
 import { COMMAND_STATUS, COMMAND_TIMEOUT_MS, COMMAND_NAMES } from './command-lifecycle.js';
 import { outletState } from '../../state/outlet-state.js';
@@ -32,11 +33,8 @@ class BleService {
         logger.info('[BleService] Mode: Hardware (Native Capacitor BLE on Android)');
         this.adapter = new CapacitorBleAdapter();
       } else {
-        logger.warn('[BleService] Hardware Mode selected in browser (Web Bluetooth scheduled for Phase 3)');
-        this.adapter = null;
-        this.isInitialized = false;
-        this.currentMode = 'hardware';
-        return;
+        logger.info('[BleService] Mode: Hardware (Web Bluetooth API in Browser)');
+        this.adapter = new WebBleAdapter();
       }
     } else {
       logger.info('[BleService] Mode: Demo (Simulated ESP32-C3 peripheral)');
@@ -61,7 +59,7 @@ class BleService {
   async startScan(onDeviceFound) {
     await this.init();
     if (!this.adapter) {
-      throw new Error('Hardware BLE mode in browser is scheduled for Phase 3. Please switch to Demo Mode to test simulated outlet operations.');
+      throw new Error('Bluetooth adapter not initialized');
     }
     appState.setState({ isScanning: true });
     try {
@@ -84,7 +82,7 @@ class BleService {
   async connect(deviceId) {
     await this.init();
     if (!this.adapter) {
-      throw new Error('Hardware BLE mode in browser is scheduled for Phase 3. Please switch to Demo Mode.');
+      throw new Error('Bluetooth adapter not initialized');
     }
     appState.setState({ isConnecting: true });
     try {

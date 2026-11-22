@@ -35,14 +35,14 @@ describe('Phase 2 — Core Logic, Modes & Command Lifecycle', () => {
       expect(bleService.currentMode).toBe('demo');
     });
 
-    it('handles switching to Hardware Mode in browser by preventing mock usage', async () => {
+    it('handles switching to Hardware Mode in browser by initializing WebBleAdapter', async () => {
       await bleService.switchMode('hardware');
       expect(appState.getState().operationMode).toBe('hardware');
-      // On browser (non-native), adapter is null until Phase 3 Web BLE
-      expect(bleService.adapter).toBeNull();
+      // In browser/node, adapter is now WebBleAdapter
+      expect(bleService.adapter.constructor.name).toBe('WebBleAdapter');
 
-      // Scanning in hardware mode without Web BLE throws informative error
-      await expect(bleService.startScan()).rejects.toThrow(/Hardware BLE mode in browser is scheduled for Phase 3/);
+      // Scanning in an unsupported browser environment throws informative error
+      await expect(bleService.startScan()).rejects.toThrow(/Web Bluetooth is not supported/);
     });
 
     it('safely switches back to Demo Mode and restores mock peripheral link', async () => {
