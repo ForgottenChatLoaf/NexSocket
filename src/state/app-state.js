@@ -4,6 +4,7 @@
 class AppState {
   constructor() {
     this.state = {
+      activeTab: 'home', // 'home' | 'devices' | 'activity' | 'settings'
       isScanning: false,
       isConnecting: false,
       connectedDevice: null,
@@ -11,6 +12,12 @@ class AppState {
       notification: null, // { type: 'success' | 'error' | 'info', message: string }
     };
     this.listeners = new Set();
+  }
+
+  setActiveTab(tab) {
+    const validTabs = ['home', 'devices', 'activity', 'settings'];
+    if (!validTabs.includes(tab)) return;
+    this.setState({ activeTab: tab });
   }
 
   setOperationMode(mode) {

@@ -32,7 +32,7 @@ export function renderOutletCard(outletNumber) {
     card.innerHTML = `
       <div class="outlet-card-top">
         <div class="outlet-identity">
-          <div class="outlet-icon-circle">
+          <div class="outlet-icon-circle ${isConnected && isOn ? 'on' : ''}">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 2v10"></path>
               <path d="M18.4 6.6a9 9 0 1 1-12.77 0"></path>
@@ -47,7 +47,7 @@ export function renderOutletCard(outletNumber) {
                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                      </button>
                      <button class="btn-icon-xs btn-cancel-rename" id="btn-cancel-rename-${outletNumber}" title="Cancel">
-                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/></svg>
                      </button>
                    </div>`
                 : `<div style="display: flex; align-items: center; gap: 0.45rem;">
@@ -59,7 +59,7 @@ export function renderOutletCard(outletNumber) {
                      </button>
                    </div>`
             }
-            <span class="outlet-sublabel">Relay Channel ${outletNumber} • Direct BLE</span>
+            <span class="outlet-sublabel">Relay Channel ${outletNumber} · GPIO ${outletNumber === 1 ? '4' : '5'}</span>
           </div>
         </div>
 
@@ -67,6 +67,38 @@ export function renderOutletCard(outletNumber) {
           <span class="pulse-dot ${isConnected && isOn ? 'online' : 'offline'}"></span>
           <span>${isConnected ? (isOn ? 'ON' : 'OFF') : 'OFFLINE'}</span>
         </div>
+      </div>
+
+      <!-- Large Accessible Smart Switch Hero -->
+      <div class="outlet-switch-hero">
+        <button 
+          type="button" 
+          class="btn-outlet-master-switch ${isConnected && isOn ? 'is-active' : ''}" 
+          id="btn-outlet-${outletNumber}-toggle"
+          ${!isConnected || isPending ? 'disabled' : ''}
+          aria-label="${outletName} Master Power Toggle"
+        >
+          <div class="switch-inner">
+            <div class="switch-power-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2v10"></path>
+                <path d="M18.4 6.6a9 9 0 1 1-12.77 0"></path>
+              </svg>
+            </div>
+            <div class="switch-meta">
+              <span class="switch-title">
+                ${
+                  isPending && isThisOutletPending
+                    ? (isActivatingThis ? 'Activating Relay...' : 'Cutting Power...') 
+                    : (isConnected ? (isOn ? 'POWER IS ACTIVE' : 'POWER IS CUT') : 'DEVICE OFFLINE')
+                }
+              </span>
+              <span class="switch-sub">
+                ${!isConnected ? 'Connect BLE to toggle' : (isPending ? 'Awaiting hardware reply' : (isOn ? 'Tap to Turn OFF' : 'Tap to Turn ON'))}
+              </span>
+            </div>
+          </div>
+        </button>
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 0.5rem;">
@@ -167,7 +199,29 @@ export function renderOutletCard(outletNumber) {
       };
     }
 
-    // Toggle handlers
+    // Smart master switch toggle handler
+    const btnToggle = card.querySelector(`#btn-outlet-${outletNumber}-toggle`);
+    if (btnToggle) {
+      btnToggle.onclick = async () => {
+        if (!isConnected || isPending) return;
+        try {
+          if (outletNumber === 1) {
+            await outletService.setOutlet1(!isOn);
+          } else {
+            await outletService.setOutlet2(!isOn);
+          }
+        } catch (err) {
+          appState.setState({
+            notification: {
+              type: 'error',
+              message: `Failed to toggle ${outletName}: ${err.message}`,
+            },
+          });
+        }
+      };
+    }
+
+    // Explicit Turn ON button
     const btnOn = card.querySelector(`#btn-outlet-${outletNumber}-on`);
     if (btnOn) {
       btnOn.onclick = async () => {
@@ -196,6 +250,7 @@ export function renderOutletCard(outletNumber) {
       };
     }
 
+    // Explicit Turn OFF button
     const btnOff = card.querySelector(`#btn-outlet-${outletNumber}-off`);
     if (btnOff) {
       btnOff.onclick = async () => {

@@ -1,8 +1,14 @@
+/* ==========================================================================
+   Responsive Breakpoints & Device Adaptation (NexSocket Phase 5)
+   ========================================================================== */
+
 /* Mobile Viewports (<= 480px wide) */
 @media (max-width: 480px) {
+  .main-layout-container,
   .main-container {
-    padding: var(--spacing-sm);
-    gap: var(--spacing-md);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    padding-bottom: calc(74px + env(safe-area-inset-bottom, 0px));
+    gap: var(--spacing-sm);
   }
 
   .card {
@@ -25,14 +31,14 @@
   }
 
   .btn-icon {
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
     flex-shrink: 0;
   }
 
   .status-indicator {
     padding: 0.2rem 0.5rem !important;
-    font-size: 0.7rem !important;
+    font-size: 0.68rem !important;
   }
 
   .brand-title {
@@ -40,18 +46,31 @@
   }
 
   .brand-subtitle {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     letter-spacing: 0.05em;
   }
 
   .brand-logo-img {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .hero-title {
+    font-size: 1.35rem;
+  }
+
+  .hero-desc {
+    font-size: 0.78rem;
   }
 
   .btn {
     padding: var(--spacing-xs) var(--spacing-md);
     font-size: var(--font-size-sm);
+  }
+
+  .outlet-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
   }
 
   .outlet-actions-row {
@@ -76,8 +95,8 @@
   }
 
   .brand-logo-img {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
   }
 
   .btn {
@@ -85,34 +104,55 @@
   }
 
   .btn-quick-action {
-    padding: 0.5rem 0.4rem;
-    gap: 0.4rem;
+    padding: 0.5rem 0.35rem;
+    gap: 0.35rem;
   }
 
   .quick-action-icon-circle {
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
   }
 }
 
-/* Tablet / Desktop View (> 640px wide) */
-@media (min-width: 640px) {
+/* Tablet Viewports (680px - 1023px) */
+@media (min-width: 680px) and (max-width: 1023px) {
+  .main-layout-container,
   .main-container {
-    max-width: 620px;
-    padding: var(--spacing-xl) var(--spacing-md);
-    gap: var(--spacing-xl);
+    max-width: 720px;
+    padding: var(--spacing-md) var(--spacing-lg);
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
   }
 
   .outlet-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-md);
+  }
+}
+
+/* Desktop & Laptop Viewports (>= 1024px) */
+@media (min-width: 1024px) {
+  .main-layout-container {
+    max-width: 1150px;
+  }
+
+  .outlet-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--spacing-lg);
   }
 
-  .connection-panel {
-    padding: var(--spacing-xl);
+  .specs-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Large Displays (>= 1440px) */
+@media (min-width: 1440px) {
+  .desktop-sidebar {
+    width: 280px;
   }
 
-  .outlet-card {
-    padding: var(--spacing-xl);
+  .main-layout-container {
+    max-width: 1250px;
+    padding: var(--spacing-xl) var(--spacing-2xl);
   }
 }

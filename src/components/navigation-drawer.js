@@ -137,18 +137,23 @@ export function openNavigationDrawer(onOpenSettings) {
       close();
 
       if (action === 'dashboard') {
+        appState.setActiveTab('home');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (action === 'connection') {
-        const el = document.querySelector('.connection-panel');
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        appState.setActiveTab('devices');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (action === 'outlets') {
-        const el = document.querySelector('.outlet-grid');
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        appState.setActiveTab('home');
+        setTimeout(() => {
+          const el = document.querySelector('.outlet-grid');
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 50);
       } else if (action === 'history') {
-        const el = document.querySelector('.activity-history-card');
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        appState.setActiveTab('activity');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (action === 'settings') {
-        if (onOpenSettings) onOpenSettings();
+        appState.setActiveTab('settings');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (action === 'about') {
         openAboutModal();
       }
