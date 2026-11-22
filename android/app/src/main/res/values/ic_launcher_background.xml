@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="ic_launcher_background">#FFFFFF</color>
+    <!-- NexSocket Brand: Obsidian background for adaptive launcher icon -->
+    <color name="ic_launcher_background">#0E1117</color>
+    <!-- Status bar and navigation bar colors -->
+    <color name="colorPrimary">#0E1117</color>
+    <color name="colorPrimaryDark">#0B0F14</color>
+    <color name="colorAccent">#10B981</color>
 </resources>

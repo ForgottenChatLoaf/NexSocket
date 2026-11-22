@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  NexSocket Splash Screen — Obsidian canvas with centered brand icon
+  Used as the launch background while Capacitor boots the WebView.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Full Obsidian canvas background -->
+    <item android:drawable="@color/colorPrimary" />
+
+    <!-- Centered NexSocket power icon (Emerald, 72dp × 72dp at center) -->
+    <item
+        android:gravity="center"
+        android:width="80dp"
+        android:height="80dp">
+        <vector
+            android:width="80dp"
+            android:height="80dp"
+            android:viewportWidth="80"
+            android:viewportHeight="80">
+
+            <!-- Surface panel behind icon -->
+            <path
+                android:fillColor="#171D27"
+                android:pathData="M0,0h80v80h-80z" />
+
+            <!-- Power vertical line -->
+            <path
+                android:pathData="M40,14 L40,40"
+                android:strokeColor="#10B981"
+                android:strokeWidth="5.5"
+                android:strokeLineCap="round"
+                android:fillColor="#00000000" />
+
+            <!-- Power ring arc (~270°) -->
+            <path
+                android:pathData="M24.5,27.5 A18,18 0 1 0 55.5,27.5"
+                android:strokeColor="#10B981"
+                android:strokeWidth="5.5"
+                android:strokeLineCap="round"
+                android:fillColor="#00000000" />
+        </vector>
+    </item>
+
+</layer-list>
