@@ -104,14 +104,17 @@ export function renderDashboard() {
       homeView.appendChild(activityWrapper);
 
       // Footer
-      const footer = document.createElement('footer');
+      const footer = document.createElement('div');
       footer.className = 'app-footer';
       footer.innerHTML = `
-        <div class="footer-badge">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>
-          <span>Bluetooth Low Energy • Direct Device Communication</span>
+        <div class="footer-ble-row">
+          <span class="footer-ble-dot"></span>
+          <span class="footer-ble-label">Bluetooth Low Energy</span>
+          <span class="footer-ble-sep">·</span>
+          <span class="footer-ble-label">Direct Device Communication</span>
         </div>
-        <span class="footer-note">Runs completely offline without Wi-Fi or Cloud Services</span>
+        <p class="footer-offline-note">Runs completely offline &mdash; no Wi-Fi or Cloud required</p>
+        <p class="footer-credit">NexSocket &mdash; ADET211 Final Showcase</p>
       `;
       homeView.appendChild(footer);
 
