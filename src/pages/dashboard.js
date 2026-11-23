@@ -1,4 +1,4 @@
-﻿import { renderHeader } from '../components/header.js';
+import { renderHeader } from '../components/header.js';
 import { renderBottomNavigation } from '../components/bottom-navigation.js';
 import { renderDesktopSidebar } from '../components/desktop-sidebar.js';
 import { renderConnectionSummary } from '../components/connection-summary.js';
@@ -113,7 +113,7 @@ export function renderDashboard() {
           <span class="footer-ble-sep">·</span>
           <span class="footer-ble-label">Direct Device Communication</span>
         </div>
-        <p class="footer-offline-note">Runs completely offline &mdash; no Wi-Fi or Cloud required</p>
+        <p class="footer-offline-note">BLE device control requires no internet &mdash; outlet switching works fully offline</p>
         <p class="footer-credit">NexSocket &mdash; ADET211 Final Showcase</p>
       `;
       homeView.appendChild(footer);
