@@ -5,7 +5,7 @@
 /* Mobile Viewports (<= 480px wide) */
 @media (max-width: 480px) {
   .main-layout-container {
-    padding: 0.5rem 0.75rem calc(4.75rem + env(safe-area-inset-bottom, 0px)) 0.75rem;
+    padding: 0.75rem 1.125rem calc(5.25rem + env(safe-area-inset-bottom, 0px)) 1.125rem;
   }
 
   .main-content-inner {
@@ -115,6 +115,10 @@
 
 /* Very Small Devices (< 360px wide) */
 @media (max-width: 360px) {
+  .main-layout-container {
+    padding: 0.5rem 0.875rem calc(5.25rem + env(safe-area-inset-bottom, 0px)) 0.875rem;
+  }
+
   .brand-title {
     font-size: 0.95rem;
   }
@@ -158,7 +162,6 @@
 
 /* Desktop & Laptop Viewports (>= 1024px) */
 @media (min-width: 1024px) {
-
   /* On desktop, the persistent sidebar handles navigation, hide header menu button */
   .app-header #btn-menu-drawer {
     display: none;

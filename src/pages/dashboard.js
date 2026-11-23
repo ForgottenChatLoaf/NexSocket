@@ -1,4 +1,4 @@
-import { renderHeader } from '../components/header.js';
+﻿import { renderHeader } from '../components/header.js';
 import { renderBottomNavigation } from '../components/bottom-navigation.js';
 import { renderDesktopSidebar } from '../components/desktop-sidebar.js';
 import { renderConnectionSummary } from '../components/connection-summary.js';
@@ -107,8 +107,11 @@ export function renderDashboard() {
       const footer = document.createElement('footer');
       footer.className = 'app-footer';
       footer.innerHTML = `
-        <span>Bluetooth Low Energy • Direct Device Communication</span>
-        <span>Runs completely offline without Wi-Fi or Cloud Services</span>
+        <div class="footer-badge">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>
+          <span>Bluetooth Low Energy • Direct Device Communication</span>
+        </div>
+        <span class="footer-note">Runs completely offline without Wi-Fi or Cloud Services</span>
       `;
       homeView.appendChild(footer);
 
